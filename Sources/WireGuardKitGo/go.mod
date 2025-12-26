@@ -12,3 +12,7 @@ require (
 	golang.org/x/net v0.6.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 )
+
+replace (
+	golang.zx2c4.com/wireguard => ./netnavi
+)
