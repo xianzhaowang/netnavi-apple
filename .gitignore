@@ -18,13 +18,13 @@ DerivedData
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
-*.xcscheme
+# xcuserdata
+# *.xcscheme
 
 ## Other
 *.xccheckout
 *.moved-aside
-*.xcuserstate
+# *.xcuserstate
 *.xcscmblueprint
 
 ## Obj-C/Swift specific
@@ -32,7 +32,7 @@ xcuserdata
 *.ipa
 
 # Swift Package Manager
-.swiftpm
+#.swiftpm
 .build/
 
 # Fastlane
@@ -43,9 +43,6 @@ fastlane/screenshots
 fastlane/test_output
 Preview.html
 output
-
-# Wireguard specific
-Sources/WireGuardApp/Config/Developer.xcconfig
 
 # Vim
 .*.sw*
