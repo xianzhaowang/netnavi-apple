@@ -1,3 +1,5 @@
+excluded:
+  - Sources/XMPPFramework/**
 disabled_rules:
  - line_length
  - trailing_whitespace
@@ -24,3 +26,4 @@ opt_in_rules:
 identifier_name:
   min_length:
     warning: 0
+

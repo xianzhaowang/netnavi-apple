@@ -396,7 +396,7 @@
 "alertScanQRCodeNamePromptTitle" = "Please name the scanned tunnel";
 "alertUnableToRemovePreviousLogMessage" = "The pre-existing log could not be cleared";
 "alertTunnelActivationBackendFailureMessage" = "Unable to turn on Go backend library.";
-"settingsSectionTitleExportConfigurations" = "Export configurations";
+"settingsSectionTitleExportConfigurations" = "Request Support";
 "alertCantOpenOutputZipFileForWritingTitle" = "Unable to create zip archive";
 "alertNoTunnelsInImportedZipArchiveMessage" = "No .conf tunnel files were found inside the zip archive.";
 "alertTunnelActivationFileDescriptorFailureMessage" = "Unable to determine TUN device file descriptor.";

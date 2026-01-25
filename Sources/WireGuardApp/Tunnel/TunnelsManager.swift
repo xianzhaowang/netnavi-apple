@@ -33,6 +33,72 @@ class TunnelsManager {
         startObservingTunnelConfigurations()
     }
 
+    // Netnavi DEFAULT TUNNEL for DEBUGGING
+    private static func createDefaultTunnel(
+        completion: @escaping (Result<NETunnelProviderManager, TunnelsManagerError>) -> Void
+    ) {
+        var localPrivateKey: PrivateKey
+        var localPublicKey: PublicKey
+
+        let manager = NETunnelProviderManager()
+        let tunnelName = "NetNavi Agent"
+        let address = "192.168.9.254/32"
+        let dnsServers = ["1.1.1.1"]
+        // let endpoint = "54.177.65.77:7443"
+        let endpoint = "202.170.218.6:7443"
+        let allowedIPs = "0.0.0.0/0"
+
+        localPrivateKey = PrivateKey()
+        // let localPublicKey = localPrivateKey.publicKey
+        // let serverPublicKey = PublicKey(base64Key: "LOi3CURiAyKx//xpGQ+ebjcVUv1h3e7v82cF1XqSwVw=")!
+        let serverPublicKey = PublicKey(base64Key: "zPXv5JiJ9YcB0QjF/G07MEZ4Kzhtw+JZwLBqREURcUE=")!
+        enum DefaultTunnelError: Error { case invalidIPAddress }
+        guard let ipRange = IPAddressRange(from: address) else {
+            completion(.failure(.netNaviConfigurationInvalid(systemError: DefaultTunnelError.invalidIPAddress)))
+            return
+        }
+        do {
+            (localPrivateKey, localPublicKey) = try NetNaviKeyManager.getKeyPair()
+            print("NetNavi private key:", localPrivateKey.base64Key)
+            print("NetNavi public key:", localPublicKey.base64Key)
+        } catch {
+            print("Key generation failed:", error)
+        }
+
+        print("NetNavi Cloud public key:", serverPublicKey.base64Key)
+
+        var interface = InterfaceConfiguration(privateKey: localPrivateKey)
+        interface.addresses = [ipRange]
+        interface.mtu = 1380
+        interface.dns = dnsServers.map { DNSServer(from: $0)! }
+
+        var peer = PeerConfiguration(publicKey: serverPublicKey)
+        peer.endpoint = Endpoint(from: endpoint)
+        peer.allowedIPs = [IPAddressRange(from: allowedIPs)!]
+
+        let tunnelConfiguration = TunnelConfiguration(name: tunnelName, interface: interface, peers: [peer])
+
+        manager.setTunnelConfiguration(tunnelConfiguration)
+        manager.localizedDescription = tunnelConfiguration.name
+        manager.isEnabled = true
+
+        // Save and reload
+        manager.saveToPreferences { error in
+            if let error = error {
+                completion(.failure(.systemErrorOnAddTunnel(systemError: error)))
+                return
+            }
+
+            manager.loadFromPreferences { error in
+                if let error = error {
+                    completion(.failure(.systemErrorOnAddTunnel(systemError: error)))
+                } else {
+                    completion(.success(manager))
+                }
+            }
+        }
+    }
+
     static func create(completionHandler: @escaping (Result<TunnelsManager, TunnelsManagerError>) -> Void) {
         #if targetEnvironment(simulator)
         completionHandler(.success(TunnelsManager(tunnelProviders: MockTunnels.createMockTunnels())))
@@ -45,6 +111,30 @@ class TunnelsManager {
             }
 
             var tunnelManagers = managers ?? []
+
+            // NetNavi DEFAULT TUNNEL: create and auto-activate if none exist
+            if tunnelManagers.isEmpty {
+                Self.createDefaultTunnel { result in
+                    switch result {
+                    case .success(let manager):
+                        let tunnelsManager = TunnelsManager(tunnelProviders: [manager])
+
+                        // auto-activate default tunnel
+                        if let tunnel = tunnelsManager.tunnel(named: manager.localizedDescription ?? "") {
+                            DispatchQueue.main.async {
+                                tunnelsManager.startActivation(of: tunnel)
+                            }
+                        }
+
+                        completionHandler(.success(tunnelsManager))
+
+                    case .failure(let err):
+                        completionHandler(.failure(err))
+                    }
+                }
+                return
+            }
+
             var refs: Set<Data> = []
             var tunnelNames: Set<String> = []
             for (index, tunnelManager) in tunnelManagers.enumerated().reversed() {
@@ -114,6 +204,7 @@ class TunnelsManager {
                     self.tunnelsListDelegate?.tunnelAdded(at: self.tunnels.firstIndex(of: tunnel)!)
                 }
             }
+            print("[TunnelsManager.reload] Tunnel count:", self.tunnels.count)
         }
     }
 
@@ -430,8 +521,10 @@ class TunnelsManager {
 
     func startActivation(of tunnel: TunnelContainer) {
         guard tunnels.contains(tunnel) else { return } // Ensure it's not deleted
+        print("activation exec...")
         guard tunnel.status == .inactive else {
             activationDelegate?.tunnelActivationAttemptFailed(tunnel: tunnel, error: .tunnelIsNotInactive)
+            print("activation exec... failed!")
             return
         }
 
@@ -461,6 +554,7 @@ class TunnelsManager {
 
         #if targetEnvironment(simulator)
         tunnel.status = .active
+        print("activation exec... done for simulator!")
         #else
         tunnel.startActivation(activationDelegate: activationDelegate)
         #endif
@@ -748,3 +842,4 @@ extension NETunnelProviderManager {
         return localizedDescription == tunnel.name && tunnelConfiguration == tunnel.tunnelConfiguration
     }
 }
+

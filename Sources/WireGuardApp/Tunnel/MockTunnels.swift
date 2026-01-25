@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-// Copyright © 2018-2023 WireGuard LLC. All Rights Reserved.
+//
+// Copyright © 2025 Freecomm. All Rights Reserved.
 
 import NetworkExtension
 
@@ -7,20 +7,15 @@ import NetworkExtension
 
 #if targetEnvironment(simulator)
 class MockTunnels {
+
     static let tunnelNames = [
-        "demo",
-        "edgesecurity",
-        "home",
-        "office",
-        "infra-fr",
-        "infra-us",
-        "krantz",
-        "metheny",
-        "frisell"
+        "NetNavi Agent"
     ]
+
+    // static let tunnelNames: [String] = []
     static let address = "192.168.%d.%d/32"
     static let dnsServers = ["8.8.8.8", "8.8.4.4"]
-    static let endpoint = "demo.wireguard.com:51820"
+    static let endpoint = "demo.netnavi.io:51820"
     static let allowedIPs = "0.0.0.0/0"
 
     static func createMockTunnels() -> [NETunnelProviderManager] {

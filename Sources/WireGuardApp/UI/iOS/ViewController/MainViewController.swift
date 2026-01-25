@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-// Copyright © 2018-2023 WireGuard LLC. All Rights Reserved.
+//
+// Copyright © 2025 Freecomm. All Rights Reserved.
 
 import UIKit
 
@@ -37,8 +37,14 @@ class MainViewController: UISplitViewController {
 
         // On iPad, always show both masterVC and detailVC, even in portrait mode, like the Settings app
         preferredDisplayMode = .allVisible
-
+        // TODO: check whether this device is registed or not, if not register first
+        do {
+            try NetNaviKeyManager.generateLocalKeyPairIfNeeded()
+        } catch {
+            assertionFailure("Failed to load/generate NetNavi keypair: \(error)")
+        }
         // Create the tunnels manager, and when it's ready, inform tunnelsListVC
+        // NetNavi: Entry point to create tunnel: need to register device first
         TunnelsManager.create { [weak self] result in
             guard let self = self else { return }
 
@@ -48,8 +54,15 @@ class MainViewController: UISplitViewController {
             case .success(let tunnelsManager):
                 self.tunnelsManager = tunnelsManager
                 self.tunnelsListVC?.setTunnelsManager(tunnelsManager: tunnelsManager)
+                print("Tunnel count:", tunnelsManager.numberOfTunnels())
 
                 tunnelsManager.activationDelegate = self
+
+                // If exactly one tunnel exists and it matches the expected name, show its detail by default
+                if tunnelsManager.numberOfTunnels() == 1 {
+                    let tunnelName = "NetNavi Agent"
+                    self.showNetNaviAgentDetailForTunnel(named: tunnelName, animated: true, shouldToggleStatus: true)
+                }
 
                 self.onTunnelsManagerReady?(tunnelsManager)
                 self.onTunnelsManagerReady = nil
@@ -100,6 +113,29 @@ extension MainViewController {
                     } else if tunnel.status == .active {
                         tunnelsManager.startDeactivation(of: tunnel)
                     }
+                }
+            }
+        }
+        if let tunnelsManager = tunnelsManager {
+            showTunnelDetailBlock(tunnelsManager)
+        } else {
+            onTunnelsManagerReady = showTunnelDetailBlock
+        }
+    }
+
+    func showNetNaviAgentDetailForTunnel(named tunnelName: String, animated: Bool, shouldToggleStatus: Bool) {
+        let showTunnelDetailBlock: (TunnelsManager) -> Void = { [weak self] tunnelsManager in
+            guard let self = self else { return }
+            guard let tunnelsListVC = self.tunnelsListVC else { return }
+            if let tunnel = tunnelsManager.tunnel(named: tunnelName) {
+                // NetNavi: Do need to switch to the details page, but keep the main view
+                // tunnelsListVC.showNetNaviAgentDetail(for: tunnel, animated: false)
+                if shouldToggleStatus {
+                    if tunnel.status == .inactive {
+                        tunnelsManager.startActivation(of: tunnel)
+                    }/* else if tunnel.status == .active {
+                        tunnelsManager.startDeactivation(of: tunnel)
+                    }*/
                 }
             }
         }

@@ -10,6 +10,7 @@ enum TunnelsManagerError: WireGuardAppError {
     case systemErrorOnAddTunnel(systemError: Error)
     case systemErrorOnModifyTunnel(systemError: Error)
     case systemErrorOnRemoveTunnel(systemError: Error)
+    case netNaviConfigurationInvalid(systemError: Error)
 
     var alertText: AlertText {
         switch self {
@@ -25,6 +26,8 @@ enum TunnelsManagerError: WireGuardAppError {
             return (tr("alertSystemErrorOnModifyTunnelTitle"), systemError.localizedUIString)
         case .systemErrorOnRemoveTunnel(let systemError):
             return (tr("alertSystemErrorOnRemoveTunnelTitle"), systemError.localizedUIString)
+        case .netNaviConfigurationInvalid(let systemError):
+            return (tr("alertSystemErrorOnAddTunnelTitle"), systemError.localizedUIString)
         }
     }
 }

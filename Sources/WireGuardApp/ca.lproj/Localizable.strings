@@ -241,12 +241,12 @@
 "scanQRCodeTipText" = "Tip: Generate with `qrencode -t ansiutf8 < tunnel.conf`";
 "alertNoTunnelsToExportMessage" = "There are no tunnels to export";
 "macMenuImportTunnels" = "Import Tunnel(s) from File…";
-"macMenuViewLog" = "View Log";
+"macMenuViewLog" = "Audit Log";
 "macAlertInfoUnrecognizedPeerKey" = "Valid keys are: ‘PublicKey’, ‘PresharedKey’, ‘AllowedIPs’, ‘Endpoint’ and ‘PersistentKeepalive’";
 "tunnelOnDemandNoSSIDs" = "No SSIDs";
 "deleteTunnelConfirmationAlertButtonTitle" = "Delete";
 "tunnelEditPlaceholderTextOff" = "Off";
-"addTunnelMenuHeader" = "Add a new WireGuard tunnel";
+"addTunnelMenuHeader" = "Create NetNavi Service";
 "macUnusableTunnelButtonTitleDeleteTunnel" = "Delete tunnel";
 "tunnelEditPlaceholderTextRequired" = "Required";
 "tunnelStatusReasserting" = "Reactivating";
@@ -259,7 +259,7 @@
 "alertScanQRCodeNamePromptTitle" = "Please name the scanned tunnel";
 "alertUnableToRemovePreviousLogMessage" = "The pre-existing log could not be cleared";
 "alertTunnelActivationBackendFailureMessage" = "Unable to turn on Go backend library.";
-"settingsSectionTitleExportConfigurations" = "Export configurations";
+"settingsSectionTitleExportConfigurations" = "Request Support";
 "alertBadArchiveMessage" = "Bad or corrupt zip archive.";
 "settingsVersionKeyWireGuardGoBackend" = "WireGuard Go Backend";
 "macFieldOnDemandSSIDs" = "SSIDs:";
@@ -269,7 +269,7 @@
 "tunnelStatusWaiting" = "Waiting";
 "alertNoTunnelsInImportedZipArchiveMessage" = "No .conf tunnel files were found inside the zip archive.";
 "alertTunnelActivationFileDescriptorFailureMessage" = "Unable to determine TUN device file descriptor.";
-"addTunnelMenuFromScratch" = "Create from scratch";
+"addTunnelMenuFromScratch" = "Activate NetNavi Agent";
 "tunnelOnDemandOptionWiFiOrEthernet" = "Wi-Fi or ethernet";
 "macToggleStatusButtonActivate" = "Activate";
 "macAlertNameIsEmpty" = "Name is required";

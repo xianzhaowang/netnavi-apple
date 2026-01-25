@@ -5,12 +5,12 @@
 
 "actionOK" = "OK";
 "actionCancel" = "Cancel";
-"actionSave" = "Save";
+"actionSave" = "Request Support";
 
 // Tunnels list UI
 
 "tunnelsListTitle" = "NetNavi";
-"tunnelsListSettingsButtonTitle" = "Settings";
+"tunnelsListSettingsButtonTitle" = "Supports";
 "tunnelsListCenteredAddTunnelButtonTitle" = "Add a tunnel";
 "tunnelsListSwipeDeleteButtonTitle" = "Delete";
 "tunnelsListSelectButtonTitle" = "Select";
@@ -21,10 +21,10 @@
 
 // Tunnels list menu
 
-"addTunnelMenuHeader" = "Add a new NetNavi tunnel";
+"addTunnelMenuHeader" = "Create NetNavi Service";
 "addTunnelMenuImportFile" = "Create from file or archive";
 "addTunnelMenuQRCode" = "Create from QR code";
-"addTunnelMenuFromScratch" = "Create from scratch";
+"addTunnelMenuFromScratch" = "Activate NetNavi Agent";
 
 // Tunnels list alerts
 
@@ -210,17 +210,17 @@
 
 // Settings UI
 
-"settingsViewTitle" = "Settings";
+"settingsViewTitle" = "Supports";
 
 "settingsSectionTitleAbout" = "About";
 "settingsVersionKeyWireGuardForIOS" = "NetNavi for iOS";
 "settingsVersionKeyWireGuardGoBackend" = "NetNavi Go Backend";
 
-"settingsSectionTitleExportConfigurations" = "Export configurations";
+"settingsSectionTitleExportConfigurations" = "Request Support";
 "settingsExportZipButtonTitle" = "Export zip archive";
 
 "settingsSectionTitleTunnelLog" = "Log";
-"settingsViewLogButtonTitle" = "View log";
+"settingsViewLogButtonTitle" = "Audit log";
 
 // Log view
 
@@ -309,7 +309,7 @@
 "macMenuManageTunnels" = "Manage Tunnels";
 "macMenuImportTunnels" = "Import Tunnel(s) from File…";
 "macMenuAddEmptyTunnel" = "Add Empty Tunnel…";
-"macMenuViewLog" = "View Log";
+"macMenuViewLog" = "Audit Log";
 "macMenuExportTunnels" = "Export Tunnels to Zip…";
 "macMenuAbout" = "About NetNavi";
 "macMenuQuit" = "Quit NetNavi";

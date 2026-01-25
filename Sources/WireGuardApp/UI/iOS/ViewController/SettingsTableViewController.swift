@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-// Copyright © 2018-2023 WireGuard LLC. All Rights Reserved.
+//
+// Copyright © 2025 Freecomm. All Rights Reserved.
 
 import UIKit
 import os.log
@@ -9,14 +9,14 @@ class SettingsTableViewController: UITableViewController {
     enum SettingsFields {
         case iosAppVersion
         case goBackendVersion
-        case exportZipArchive
+        // case exportZipArchive
         case viewLog
 
         var localizedUIString: String {
             switch self {
             case .iosAppVersion: return tr("settingsVersionKeyWireGuardForIOS")
             case .goBackendVersion: return tr("settingsVersionKeyWireGuardGoBackend")
-            case .exportZipArchive: return tr("settingsExportZipButtonTitle")
+            // case .exportZipArchive: return tr("settingsExportZipButtonTitle")
             case .viewLog: return tr("settingsViewLogButtonTitle")
             }
         }
@@ -24,7 +24,7 @@ class SettingsTableViewController: UITableViewController {
 
     let settingsFieldsBySection: [[SettingsFields]] = [
         [.iosAppVersion, .goBackendVersion],
-        [.exportZipArchive],
+        // [.exportZipArchive],
         [.viewLog]
     ]
 
@@ -52,7 +52,8 @@ class SettingsTableViewController: UITableViewController {
         tableView.register(KeyValueCell.self)
         tableView.register(ButtonCell.self)
 
-        tableView.tableFooterView = UIImageView(image: UIImage(named: "wireguard.pdf"))
+        // TODO: add it back for NetNavi?
+        // tableView.tableFooterView = UIImageView(image: UIImage(named: "wireguard.pdf"))
     }
 
     override func viewDidLayoutSubviews() {
@@ -153,6 +154,7 @@ extension SettingsTableViewController {
                 cell.value = WIREGUARD_GO_VERSION
             }
             return cell
+        /*
         } else if field == .exportZipArchive {
             let cell: ButtonCell = tableView.dequeueReusableCell(for: indexPath)
             cell.buttonText = field.localizedUIString
@@ -160,6 +162,7 @@ extension SettingsTableViewController {
                 self?.exportConfigurationsAsZipFile(sourceView: cell.button)
             }
             return cell
+        */
         } else if field == .viewLog {
             let cell: ButtonCell = tableView.dequeueReusableCell(for: indexPath)
             cell.buttonText = field.localizedUIString

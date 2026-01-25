@@ -6,6 +6,7 @@
 package device
 
 import (
+    "net"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -15,9 +16,15 @@ import (
 	"golang.zx2c4.com/wireguard/ratelimiter"
 	"golang.zx2c4.com/wireguard/rwcancel"
 	"golang.zx2c4.com/wireguard/tun"
+    
+    "gvisor.dev/gvisor/pkg/tcpip/link/channel"
+    "gvisor.dev/gvisor/pkg/tcpip/stack"
 )
 
 type Device struct {
+    netstack    *stack.Stack
+    linkEP      *channel.Endpoint
+    tunIP       net.IP
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.

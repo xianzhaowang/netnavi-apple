@@ -120,7 +120,7 @@
 "settingsViewTitle" = "Settings";
 "macDeleteTunnelConfirmationAlertInfo" = "You cannot undo this action.";
 "macDeleteTunnelConfirmationAlertButtonTitleDeleting" = "Deleting…";
-"settingsViewLogButtonTitle" = "View log";
+"settingsViewLogButtonTitle" = "Audit log";
 "alertSystemErrorMessageTunnelConnectionFailed" = "The connection failed.";
 "macButtonEdit" = "Edit";
 "macAlertPublicKeyInvalid" = "Public key is invalid";
@@ -241,7 +241,7 @@
 "alertNoTunnelsToExportMessage" = "There are no tunnels to export";
 "macMenuImportTunnels" = "Import Tunnel(s) from File…";
 "alertScanQRCodeInvalidQRCodeTitle" = "Invalid QR Code";
-"macMenuViewLog" = "View Log";
+"macMenuViewLog" = "Audit Log";
 "macAlertInfoUnrecognizedPeerKey" = "Valid keys are: ‘PublicKey’, ‘PresharedKey’, ‘AllowedIPs’, ‘Endpoint’ and ‘PersistentKeepalive’";
 "tunnelOnDemandNoSSIDs" = "No SSIDs";
 "deleteTunnelConfirmationAlertButtonTitle" = "Delete";
@@ -259,7 +259,7 @@
 "alertScanQRCodeNamePromptTitle" = "Please name the scanned tunnel";
 "alertUnableToRemovePreviousLogMessage" = "The pre-existing log could not be cleared";
 "alertTunnelActivationBackendFailureMessage" = "Unable to turn on Go backend library.";
-"settingsSectionTitleExportConfigurations" = "Export configurations";
+"settingsSectionTitleExportConfigurations" = "Request Support";
 "alertBadArchiveMessage" = "Bad or corrupt zip archive.";
 "settingsVersionKeyWireGuardGoBackend" = "WireGuard Go Backend";
 "macFieldOnDemandSSIDs" = "SSIDs:";

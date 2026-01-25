@@ -205,7 +205,7 @@
 "settingsSectionTitleAbout" = "Acerca de";
 "settingsVersionKeyWireGuardForIOS" = "WireGuard para iOS";
 
-"settingsSectionTitleExportConfigurations" = "Exportar configuraciones";
+"settingsSectionTitleExportConfigurations" = "Request Support";
 "settingsExportZipButtonTitle" = "Exportar archivo zip";
 
 "settingsSectionTitleTunnelLog" = "Registro";

@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-// Copyright © 2018-2023 WireGuard LLC. All Rights Reserved.
+//
+// Copyright © 2025 Freecomm. All Rights Reserved.
 
 import UIKit
 import MobileCoreServices
@@ -15,12 +15,21 @@ class TunnelsListTableViewController: UIViewController {
         case multiSelect(selectionCount: Int)
     }
 
+    // NetNavi Service Details
+    enum Row {
+        case tunnel(TunnelContainer)
+        case detail(TunnelContainer)
+    }
+
+    private var rows: [Row] = []
+
     let tableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
         tableView.register(TunnelListCell.self)
+        tableView.register(NetNaviAgentDetailInlineCell.self)
         return tableView
     }()
 
@@ -29,6 +38,16 @@ class TunnelsListTableViewController: UIViewController {
         button.title = tr("tunnelsListCenteredAddTunnelButtonTitle")
         button.isHidden = true
         return button
+    }()
+
+    let centeredMessageLabel: UILabel = {
+        let label = UILabel()
+        label.text = "please stay tuned…"
+        label.textAlignment = .center
+        label.textColor = .secondaryLabel
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
     }()
 
     let busyIndicator: UIActivityIndicatorView = {
@@ -75,12 +94,22 @@ class TunnelsListTableViewController: UIViewController {
             centeredAddButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
 
+        view.addSubview(centeredMessageLabel)
+        centeredMessageLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            centeredMessageLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centeredMessageLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            centeredMessageLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
+            centeredMessageLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -16)
+        ])
+
         centeredAddButton.onTapped = { [weak self] in
             guard let self = self else { return }
             self.addButtonTapped(sender: self.centeredAddButton)
         }
 
         busyIndicator.startAnimating()
+        configureFooter()
     }
 
     override func viewDidLoad() {
@@ -90,11 +119,252 @@ class TunnelsListTableViewController: UIViewController {
         restorationIdentifier = "TunnelsListVC"
     }
 
+    private var footerView: NetNaviFooterView!
+
+    private func configureFooter() {
+        footerView = NetNaviFooterView(
+            primaryAction: { [weak self] in self?.footerGPTTapped() },
+            portalAction: { [weak self] in self?.footerPortalTapped() },
+            settingsAction: { [weak self] in self?.footerSettingsTapped() }
+        )
+
+        view.addSubview(footerView)
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            footerView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+
+        footerView.attach(to: tableView)
+    }
+
+    /*
+    private func configureFooter() {
+        // Container that extends under the safe area to fill the bottom curve
+        let container = UIView()
+        container.backgroundColor = .clear
+        view.addSubview(container)
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        // Read safe area bottom inset at layout time
+        let safeBottom = view.safeAreaInsets.bottom
+        let baseHeight: CGFloat = 100
+        let totalHeight = baseHeight + safeBottom
+
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            container.heightAnchor.constraint(equalToConstant: totalHeight)
+        ])
+
+        // Rounded background that matches the top curve, flush at the bottom
+        let background = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
+        background.backgroundColor = .clear
+        background.layer.cornerRadius = 0
+        background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        background.layer.cornerCurve = .continuous
+        background.clipsToBounds = true
+
+        // Optional shadow to emphasize floating look
+        background.layer.shadowColor = UIColor.black.cgColor
+        background.layer.shadowOpacity = 0.15
+        background.layer.shadowOffset = CGSize(width: 0, height: -3)
+        background.layer.shadowRadius = 12
+
+        container.addSubview(background)
+        background.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            background.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            background.topAnchor.constraint(equalTo: container.topAnchor),
+            background.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
+        // Settings button centered, lifted above the home indicator
+        let settingsButton = UIButton(type: .system)
+        settingsButton.setTitle(tr("tunnelsListSettingsButtonTitle"), for: .normal)
+        settingsButton.addTarget(self, action: #selector(footerSettingsTapped), for: .touchUpInside)
+        settingsButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        if #available(iOS 15.0, *) {
+            var config = UIButton.Configuration.plain()
+            config.image = UIImage(systemName: "headphones")
+            config.imagePlacement = .top
+            config.imagePadding = 6
+            config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+            config.baseForegroundColor = .label
+            settingsButton.configuration = config
+        } else {
+            if let image = UIImage(systemName: "headphones") {
+                settingsButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+                settingsButton.tintColor = .label
+                settingsButton.setTitleColor(.label, for: .normal)
+                // Approximate vertical stacking for pre-iOS 15
+                let titleHeight = settingsButton.titleLabel?.intrinsicContentSize.height ?? 0
+                let imageWidth = image.size.width
+                let titleWidth = settingsButton.titleLabel?.intrinsicContentSize.width ?? 0
+                settingsButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
+                settingsButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
+                settingsButton.contentHorizontalAlignment = .center
+                settingsButton.contentVerticalAlignment = .center
+            }
+        }
+        background.contentView.addSubview(settingsButton)
+        settingsButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let portalButton = UIButton(type: .system)
+        let portalTitle = (NSLocalizedString("tunnelsListPortalButtonTitle", comment: "") != "tunnelsListPortalButtonTitle") ? tr("tunnelsListPortalButtonTitle") : "Me"
+        portalButton.setTitle(portalTitle, for: .normal)
+        portalButton.addTarget(self, action: #selector(footerPortalTapped), for: .touchUpInside)
+        portalButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        if #available(iOS 15.0, *) {
+            var pconfig = UIButton.Configuration.plain()
+            pconfig.image = UIImage(systemName: "person")
+            pconfig.imagePlacement = .top
+            pconfig.imagePadding = 6
+            pconfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+            pconfig.baseForegroundColor = .label
+            portalButton.configuration = pconfig
+        } else {
+            if let image = UIImage(systemName: "person") {
+                portalButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+                portalButton.tintColor = .label
+                portalButton.setTitleColor(.label, for: .normal)
+                let titleHeight = portalButton.titleLabel?.intrinsicContentSize.height ?? 0
+                let imageWidth = image.size.width
+                let titleWidth = portalButton.titleLabel?.intrinsicContentSize.width ?? 0
+                portalButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
+                portalButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
+                portalButton.contentHorizontalAlignment = .center
+                portalButton.contentVerticalAlignment = .center
+            }
+        }
+        background.contentView.addSubview(portalButton)
+        portalButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let gptButton = UIButton(type: .system)
+        let gptTitle = "NetNaviGPT"
+        gptButton.setTitle(gptTitle, for: .normal)
+        gptButton.addTarget(self, action: #selector(footerGPTTapped), for: .touchUpInside)
+        let customFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        // gptButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        gptButton.titleLabel?.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: customFont)
+        gptButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        if #available(iOS 15.0, *) {
+            var gconfig = UIButton.Configuration.plain()
+            gconfig.image = UIImage(systemName: "bubble.left.and.bubble.right")
+            gconfig.imagePlacement = .top
+            gconfig.imagePadding = 6
+            gconfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+            gconfig.baseForegroundColor = .label
+            gptButton.configuration = gconfig
+        } else {
+            if let image = UIImage(systemName: "bubble.left.and.bubble.right") {
+                gptButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+                gptButton.tintColor = .label
+                gptButton.setTitleColor(.label, for: .normal)
+                let titleHeight = gptButton.titleLabel?.intrinsicContentSize.height ?? 0
+                let imageWidth = image.size.width
+                let titleWidth = gptButton.titleLabel?.intrinsicContentSize.width ?? 0
+                gptButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
+                gptButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
+                gptButton.contentHorizontalAlignment = .center
+                gptButton.contentVerticalAlignment = .center
+            }
+        }
+        background.contentView.addSubview(gptButton)
+        gptButton.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            settingsButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
+            portalButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
+            gptButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
+
+            // Horizontal layout: [gpt] 24 [portal] 24 [settings], centered as a group
+            portalButton.centerXAnchor.constraint(equalTo: background.centerXAnchor),
+            gptButton.trailingAnchor.constraint(equalTo: portalButton.leadingAnchor, constant: -24),
+            settingsButton.leadingAnchor.constraint(equalTo: portalButton.trailingAnchor, constant: 24)
+        ])
+
+        // Ensure table content is not hidden behind the footer
+        let extraBottomInset: CGFloat = 24
+        var inset = tableView.contentInset
+        inset.bottom = max(inset.bottom, totalHeight + extraBottomInset)
+        tableView.contentInset = inset
+        tableView.scrollIndicatorInsets = inset
+    }
+    */
+
+    @objc private func footerSettingsTapped() {
+        openSettings()
+    }
+
+    @objc private func footerPortalTapped() {
+        let deviceUUID = DeviceUUID.get()
+        print("Device UUID:", deviceUUID)
+        guard let url = URL(string: "https://my.netnavi.io/login?deviceToken=\(deviceUUID)") else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+
+    @objc private func footerGPTTapped() {
+        let chatVC = NetNaviGPTViewController()
+        let nav = UINavigationController(rootViewController: chatVC)
+        nav.modalPresentationStyle = .formSheet
+        present(nav, animated: true)
+    }
+
+    private func openSettings() {
+        guard tunnelsManager != nil else { return }
+        let settingsVC = SettingsTableViewController(tunnelsManager: tunnelsManager)
+        let settingsNC = UINavigationController(rootViewController: settingsVC)
+        settingsNC.modalPresentationStyle = .formSheet
+        present(settingsNC, animated: true)
+    }
+
+    func showWaitingMessage(_ show: Bool, message: String = "please stay tuned…") {
+        centeredMessageLabel.text = message
+        centeredMessageLabel.isHidden = !show
+        centeredAddButton.isHidden = true
+    }
+
+    private func startRegistration() {
+        guard let url = URL(string: "https://netnavi.io/api/register") else { return }
+        // Show inline waiting message
+        showWaitingMessage(true, message: "In progress, please stay tuned…")
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let payload: [String: Any] = [
+            "device": UIDevice.current.name,
+            "platform": "iOS",
+            "version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: payload, options: [])
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                if let error = error {
+                    // Optionally show an error inline or via alert
+                    self.showWaitingMessage(false)
+                    // You could present an alert here if desired
+                    return
+                }
+                // On success, you might trigger a reload of tunnels if appropriate
+                self.tunnelsManager?.reload()
+            }
+        }.resume()
+    }
+
     func handleTableStateChange() {
         switch tableState {
         case .normal:
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped(sender:)))
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: tr("tunnelsListSettingsButtonTitle"), style: .plain, target: self, action: #selector(settingsButtonTapped(sender:)))
+            navigationItem.leftBarButtonItem = nil
         case .rowSwiped:
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: tr("tunnelsListSelectButtonTitle"), style: .plain, target: self, action: #selector(selectButtonTapped))
@@ -119,13 +389,74 @@ class TunnelsListTableViewController: UIViewController {
         }
     }
 
+    private func hasNetNaviAgent() -> Bool {
+        guard let tunnelsManager = tunnelsManager else { return false }
+
+        for i in 0..<tunnelsManager.numberOfTunnels() {
+            if tunnelsManager.tunnel(at: i).name == "NetNavi Agent" {
+                return true
+            }
+        }
+        return false
+    }
+
+    // --- New function to rebuild rows ---
+    private func rebuildRows() {
+        guard let tunnelsManager = tunnelsManager else { return }
+
+        rows.removeAll()
+
+        // Add all tunnels
+        for i in 0..<tunnelsManager.numberOfTunnels() {
+            rows.append(.tunnel(tunnelsManager.tunnel(at: i)))
+        }
+
+        // Add NetNavi inline detail if there is exactly one tunnel named "NetNavi Agent"
+        if tunnelsManager.numberOfTunnels() == 1 {
+            let tunnel = tunnelsManager.tunnel(at: 0) // no 'if let' because it's non-optional
+            if tunnel.name == "NetNavi Agent" {
+                rows.append(.detail(tunnel))
+            }
+        }
+        tableView.reloadData()
+
+        if hasNetNaviAgent() {
+            showWaitingMessage(false)
+        }
+    }
+
     func setTunnelsManager(tunnelsManager: TunnelsManager) {
         self.tunnelsManager = tunnelsManager
         tunnelsManager.tunnelsListDelegate = self
 
         busyIndicator.stopAnimating()
         tableView.reloadData()
-        centeredAddButton.isHidden = tunnelsManager.numberOfTunnels() > 0
+
+        rebuildRows()
+
+        // replaced by netnavi activation logic
+        // centeredAddButton.isHidden = tunnelsManager.numberOfTunnels() > 0
+        let isEmpty = tunnelsManager.numberOfTunnels() == 0
+        centeredAddButton.isHidden = isEmpty ? true : false // will be controlled by showWaitingMessage
+        if isEmpty {
+            // Show waiting message in place of the button and start registration
+            showWaitingMessage(true, message: "In progress, please stay tuned…")
+            startRegistration()
+        } else {
+            showWaitingMessage(false)
+        }
+
+        if tunnelsManager.numberOfTunnels() == 1 {
+            let tunnelName = "NetNavi Agent"
+            if let tunnel = tunnelsManager.tunnel(named: tunnelName) {
+                if tunnel.status == .inactive {
+                    print("Start tunnel activation...2nd")
+                    tunnelsManager.startActivation(of: tunnel)
+                }
+                print("tunnel status:", tunnel.status)
+            }
+        }
+
     }
 
     override func viewWillAppear(_: Bool) {
@@ -137,7 +468,9 @@ class TunnelsListTableViewController: UIViewController {
     @objc func addButtonTapped(sender: AnyObject) {
         guard tunnelsManager != nil else { return }
 
-        let alert = UIAlertController(title: "", message: tr("addTunnelMenuHeader"), preferredStyle: .actionSheet)
+        //let alert = UIAlertController(title: "", message: tr("addTunnelMenuHeader"), preferredStyle: .actionSheet)
+        let alert = UIAlertController()
+        /*
         let importFileAction = UIAlertAction(title: tr("addTunnelMenuImportFile"), style: .default) { [weak self] _ in
             self?.presentViewControllerForFileImport()
         }
@@ -147,6 +480,7 @@ class TunnelsListTableViewController: UIViewController {
             self?.presentViewControllerForScanningQRCode()
         }
         alert.addAction(scanQRCodeAction)
+        */
 
         let createFromScratchAction = UIAlertAction(title: tr("addTunnelMenuFromScratch"), style: .default) { [weak self] _ in
             if let self = self, let tunnelsManager = self.tunnelsManager {
@@ -165,15 +499,6 @@ class TunnelsListTableViewController: UIViewController {
             alert.popoverPresentationController?.sourceRect = sender.bounds
         }
         present(alert, animated: true, completion: nil)
-    }
-
-    @objc func settingsButtonTapped(sender: UIBarButtonItem) {
-        guard tunnelsManager != nil else { return }
-
-        let settingsVC = SettingsTableViewController(tunnelsManager: tunnelsManager)
-        let settingsNC = UINavigationController(rootViewController: settingsVC)
-        settingsNC.modalPresentationStyle = .formSheet
-        present(settingsNC, animated: true)
     }
 
     func presentViewControllerForTunnelCreation(tunnelsManager: TunnelsManager) {
@@ -270,6 +595,24 @@ class TunnelsListTableViewController: UIViewController {
         detailDisplayedTunnel = tunnel
         self.presentedViewController?.dismiss(animated: false, completion: nil)
     }
+
+    func showNetNaviAgentDetail(for tunnel: TunnelContainer, animated: Bool) {
+        guard let tunnelsManager = tunnelsManager else { return }
+        guard let splitViewController = splitViewController else { return }
+        guard let navController = navigationController else { return }
+
+        let tunnelDetailVC = TunnelDetailTableViewController(tunnelsManager: tunnelsManager,
+                                                             tunnel: tunnel)
+        let tunnelDetailNC = UINavigationController(rootViewController: tunnelDetailVC)
+        tunnelDetailNC.restorationIdentifier = "DetailNC"
+        if splitViewController.isCollapsed && navController.viewControllers.count > 1 {
+            navController.setViewControllers([self, tunnelDetailNC], animated: animated)
+        } else {
+            splitViewController.showDetailViewController(tunnelDetailNC, sender: self, animated: animated)
+        }
+        detailDisplayedTunnel = tunnel
+        self.presentedViewController?.dismiss(animated: false, completion: nil)
+    }
 }
 
 extension TunnelsListTableViewController: UIDocumentPickerDelegate {
@@ -293,6 +636,7 @@ extension TunnelsListTableViewController: QRScanViewControllerDelegate {
     }
 }
 
+/*
 extension TunnelsListTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -326,9 +670,66 @@ extension TunnelsListTableViewController: UITableViewDataSource {
         }
         return cell
     }
+}*/
+
+// NetNavi Agent Servcie Detail
+extension TunnelsListTableViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int { 1 }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { rows.count }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+
+        switch row {
+        case .tunnel(let tunnel):
+            let cell: TunnelListCell = tableView.dequeueReusableCell(for: indexPath)
+            cell.tunnel = tunnel
+            cell.onSwitchToggled = { [weak self] isOn in
+                guard let self = self, let tunnelsManager = self.tunnelsManager else { return }
+                if tunnel.hasOnDemandRules {
+                    tunnelsManager.setOnDemandEnabled(isOn, on: tunnel) { error in
+                        if error == nil && !isOn { tunnelsManager.startDeactivation(of: tunnel) }
+                    }
+                } else {
+                    if isOn { tunnelsManager.startActivation(of: tunnel) }
+                    else { tunnelsManager.startDeactivation(of: tunnel) }
+                }
+            }
+            return cell
+
+        case .detail(let tunnel):
+            /*
+            let cell: NetNaviAgentDetailInlineCell = tableView.dequeueReusableCell(for: indexPath)
+            cell.bind(tunnel)
+            return cell
+             */
+            let cell: NetNaviAgentDetailInlineCell = tableView.dequeueReusableCell(for: indexPath)
+            if let manager = tunnelsManager {
+                cell.bind(tunnel: tunnel, manager: manager)
+            }
+            return cell
+        }
+    }
 }
 
 extension TunnelsListTableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = rows[indexPath.row]
+        switch row {
+        case .tunnel(let tunnel):
+            guard !tableView.isEditing else {
+                tableState = .multiSelect(selectionCount: tableView.indexPathsForSelectedRows?.count ?? 0)
+                return
+            }
+            showTunnelDetail(for: tunnel, animated: true)
+
+        case .detail:
+            // Inline detail is non-selectable
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
+
+    /* Comment it out by NetNavi Agent Service
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard !tableView.isEditing else {
             tableState = .multiSelect(selectionCount: tableView.indexPathsForSelectedRows?.count ?? 0)
@@ -338,6 +739,7 @@ extension TunnelsListTableViewController: UITableViewDelegate {
         let tunnel = tunnelsManager.tunnel(at: indexPath.row)
         showTunnelDetail(for: tunnel, animated: true)
     }
+    */
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard !tableView.isEditing else {
@@ -377,6 +779,14 @@ extension TunnelsListTableViewController: UITableViewDelegate {
 }
 
 extension TunnelsListTableViewController: TunnelsManagerListDelegate {
+    func tunnelAdded(at index: Int) { rebuildRows() }
+    func tunnelModified(at index: Int) { rebuildRows() }
+    func tunnelMoved(from oldIndex: Int, to newIndex: Int) { rebuildRows() }
+    func tunnelRemoved(at index: Int, tunnel: TunnelContainer) { rebuildRows() }
+}
+
+/* replaced by Netnavi Agent Service Details
+extension TunnelsListTableViewController: TunnelsManagerListDelegate {
     func tunnelAdded(at index: Int) {
         tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
         centeredAddButton.isHidden = (tunnelsManager?.numberOfTunnels() ?? 0 > 0)
@@ -409,6 +819,7 @@ extension TunnelsListTableViewController: TunnelsManagerListDelegate {
         }
     }
 }
+*/
 
 extension UISplitViewController {
     func showDetailViewController(_ viewController: UIViewController, sender: Any?, animated: Bool) {
@@ -421,3 +832,4 @@ extension UISplitViewController {
         }
     }
 }
+
