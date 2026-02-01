@@ -209,6 +209,10 @@
 		DC1AF4472F1F0D2D00E2E2C6 /* NetNaviKeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1AF4462F1F0D1E00E2E2C6 /* NetNaviKeychainStore.swift */; };
 		DC6621492F1B451900F9A0B7 /* NetNaviGPTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6621482F1B450200F9A0B7 /* NetNaviGPTViewController.swift */; };
 		DC6796572F1F187600FF4C82 /* NetNaviKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6796562F1F186F00FF4C82 /* NetNaviKeyManager.swift */; };
+		DC679BD32F270DF400FF4C82 /* XMPPFramework in Frameworks */ = {isa = PBXBuildFile; productRef = DC679BD22F270DF400FF4C82 /* XMPPFramework */; };
+		DC679BD52F270DF400FF4C82 /* XMPPFrameworkSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DC679BD42F270DF400FF4C82 /* XMPPFrameworkSwift */; };
+		DC679BD72F270E8B00FF4C82 /* NetNaviXMPP.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC679BD62F270E7B00FF4C82 /* NetNaviXMPP.swift */; };
+		DC679BD92F271C6000FF4C82 /* NetNaviDeviceActivation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC679BD82F271C4A00FF4C82 /* NetNaviDeviceActivation.swift */; };
 		DCE187362F1B753F004E89B7 /* NetNaviAgentDetailInlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE187352F1B74DE004E89B7 /* NetNaviAgentDetailInlineCell.swift */; };
 		DCE327472F1C941000B4D1EC /* NetNaviFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE327462F1C93FF00B4D1EC /* NetNaviFooterView.swift */; };
 /* End PBXBuildFile section */
@@ -448,6 +452,8 @@
 		DC1AF4462F1F0D1E00E2E2C6 /* NetNaviKeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviKeychainStore.swift; sourceTree = "<group>"; };
 		DC6621482F1B450200F9A0B7 /* NetNaviGPTViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviGPTViewController.swift; sourceTree = "<group>"; };
 		DC6796562F1F186F00FF4C82 /* NetNaviKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviKeyManager.swift; sourceTree = "<group>"; };
+		DC679BD62F270E7B00FF4C82 /* NetNaviXMPP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviXMPP.swift; sourceTree = "<group>"; };
+		DC679BD82F271C4A00FF4C82 /* NetNaviDeviceActivation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviDeviceActivation.swift; sourceTree = "<group>"; };
 		DCE187352F1B74DE004E89B7 /* NetNaviAgentDetailInlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviAgentDetailInlineCell.swift; sourceTree = "<group>"; };
 		DCE327462F1C93FF00B4D1EC /* NetNaviFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetNaviFooterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -483,6 +489,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC679BD52F270DF400FF4C82 /* XMPPFrameworkSwift in Frameworks */,
+				DC679BD32F270DF400FF4C82 /* XMPPFramework in Frameworks */,
 				6B653B86220DE2960050E69C /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -830,6 +838,8 @@
 		DC1AF4432F1F091900E2E2C6 /* NetNavi */ = {
 			isa = PBXGroup;
 			children = (
+				DC679BD82F271C4A00FF4C82 /* NetNaviDeviceActivation.swift */,
+				DC679BD62F270E7B00FF4C82 /* NetNaviXMPP.swift */,
 				DC6796562F1F186F00FF4C82 /* NetNaviKeyManager.swift */,
 				DC1AF4462F1F0D1E00E2E2C6 /* NetNaviKeychainStore.swift */,
 				DC1AF4442F1F092800E2E2C6 /* NetNaviUUID.swift */,
@@ -973,6 +983,8 @@
 			);
 			name = NetNaviiOS;
 			packageProductDependencies = (
+				DC679BD22F270DF400FF4C82 /* XMPPFramework */,
+				DC679BD42F270DF400FF4C82 /* XMPPFrameworkSwift */,
 			);
 			productName = NetNavi;
 			productReference = 6FF4AC14211EC46F002C96EB /* NetNavi.app */;
@@ -1073,7 +1085,7 @@
 			);
 			mainGroup = 6FF4AC0B211EC46F002C96EB;
 			packageReferences = (
-				DC6796582F25C00B00FF4C82 /* XCLocalSwiftPackageReference "XMPPFramework" */,
+				DC679BD12F270DF400FF4C82 /* XCLocalSwiftPackageReference "Sources/XMPPFramework" */,
 			);
 			productRefGroup = 6FF4AC15211EC46F002C96EB /* Products */;
 			projectDirPath = "";
@@ -1464,11 +1476,13 @@
 				6F19D30422402B8700A126F2 /* ConfirmationAlertPresenter.swift in Sources */,
 				6F919EC3218A2AE90023B400 /* ErrorPresenter.swift in Sources */,
 				6B62E45F220A6FA900EF34A6 /* PrivateDataConfirmation.swift in Sources */,
+				DC679BD92F271C6000FF4C82 /* NetNaviDeviceActivation.swift in Sources */,
 				6F5A2B4821AFF49A0081EDD8 /* FileManager+Extension.swift in Sources */,
 				5F45418C21C2D48200994C13 /* TunnelEditKeyValueCell.swift in Sources */,
 				6FE254FB219C10800028284D /* ZipImporter.swift in Sources */,
 				585B107E2577E294004F691E /* PrivateKey.swift in Sources */,
 				6FDEF7FB21863B6100D8FBF6 /* unzip.c in Sources */,
+				DC679BD72F270E8B00FF4C82 /* NetNaviXMPP.swift in Sources */,
 				6F29A9432278518D00DC6A6B /* RecentTunnelsTracker.swift in Sources */,
 				6F0F44C9222D55BB00B0FF04 /* TextCell.swift in Sources */,
 				5F4541A021C2D6B700994C13 /* TunnelListCell.swift in Sources */,
@@ -1780,8 +1794,9 @@
 		6FDEF7DE21846BC100D8FBF6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				PATH = "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/go/bin";
+				PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1789,8 +1804,9 @@
 		6FDEF7DF21846BC100D8FBF6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				PATH = "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/go/bin";
+				PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -2057,11 +2073,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		DC6796582F25C00B00FF4C82 /* XCLocalSwiftPackageReference "XMPPFramework" */ = {
+		DC679BD12F270DF400FF4C82 /* XCLocalSwiftPackageReference "Sources/XMPPFramework" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = XMPPFramework;
+			relativePath = Sources/XMPPFramework;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DC679BD22F270DF400FF4C82 /* XMPPFramework */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XMPPFramework;
+		};
+		DC679BD42F270DF400FF4C82 /* XMPPFrameworkSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XMPPFrameworkSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6FF4AC0C211EC46F002C96EB /* Project object */;
 }

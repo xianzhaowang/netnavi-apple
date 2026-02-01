@@ -384,7 +384,11 @@ public class WireGuardAdapter {
     }
 
     /// Resolves the hostnames in the given tunnel configuration and return settings generator.
-    /// - Parameter tunnelConfiguration: an instance of type `TunnelConfiguration`.
+    /// - Parameter tunnelC
+    ///
+    ///
+    ///
+    /// onfiguration: an instance of type `TunnelConfiguration`.
     /// - Throws: an error of type `WireGuardAdapterError`.
     /// - Returns: an instance of type `PacketTunnelSettingsGenerator`.
     private func makeSettingsGenerator(with tunnelConfiguration: TunnelConfiguration) throws -> PacketTunnelSettingsGenerator {

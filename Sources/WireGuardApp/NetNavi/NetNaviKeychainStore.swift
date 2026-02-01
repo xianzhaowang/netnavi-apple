@@ -48,6 +48,25 @@ final class NetNaviKeychainStore {
         SecItemDelete(baseQuery(key) as CFDictionary)
     }
 
+    func setNetNaviConfig(_ data: Data, for key: String) {
+        if exists(key) {
+            update(data, key)
+        } else {
+            add(data, key)
+        }
+    }
+
+    // Retrieve raw Data
+    func getNetNaviConfig(_ key: String) -> Data? {
+        var query = baseQuery(key)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+
+        var item: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        return (status == errSecSuccess) ? (item as? Data) : nil
+    }
+
     // MARK: - Internal
 
     private func exists(_ key: String) -> Bool {

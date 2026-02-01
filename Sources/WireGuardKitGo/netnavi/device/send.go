@@ -244,7 +244,6 @@ func (device *Device) RoutineReadFromTUN() {
 		elem.packet = elem.buffer[offset : offset+size]
 
 		// lookup peer
-
 		var peer *Peer
 		switch elem.packet[0] >> 4 {
 		case ipv4.Version:
@@ -268,6 +267,29 @@ func (device *Device) RoutineReadFromTUN() {
 		if peer == nil {
 			continue
 		}
+        
+        // NetNavi DNS Handler
+        if device.isDNSPacket(elem.packet) {
+            if device.isClosed() {
+                device.log.Errorf("KKKKKK no ready, skip")
+            } else {
+                // 1. MAKE A DEEP COPY of the packet data
+                // This prevents the data from being overwritten by the next loop iteration
+                dnsPacket := make([]byte, len(elem.packet))
+                copy(dnsPacket, elem.packet)
+
+                // 2. Start the handler with the COPY
+                go device.handleDNS(dnsPacket)
+
+                // 3. RECYCLE the element back to the pool immediately
+                // This prevents the memory leak
+                device.PutMessageBuffer(elem.buffer)
+                device.PutOutboundElement(elem)
+                elem = nil // Set to nil so the next iteration creates a new one
+                continue
+            }
+        }
+  
 		if peer.isRunning.Load() {
 			peer.StagePacket(elem)
 			elem = nil

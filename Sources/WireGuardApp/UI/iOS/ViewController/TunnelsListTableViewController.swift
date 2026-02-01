@@ -5,7 +5,7 @@ import UIKit
 import MobileCoreServices
 import UserNotifications
 
-class TunnelsListTableViewController: UIViewController {
+class TunnelsListTableViewController: UIViewController, URLSessionDelegate {
 
     var tunnelsManager: TunnelsManager?
 
@@ -141,163 +141,6 @@ class TunnelsListTableViewController: UIViewController {
         footerView.attach(to: tableView)
     }
 
-    /*
-    private func configureFooter() {
-        // Container that extends under the safe area to fill the bottom curve
-        let container = UIView()
-        container.backgroundColor = .clear
-        view.addSubview(container)
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        // Read safe area bottom inset at layout time
-        let safeBottom = view.safeAreaInsets.bottom
-        let baseHeight: CGFloat = 100
-        let totalHeight = baseHeight + safeBottom
-
-        NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            container.heightAnchor.constraint(equalToConstant: totalHeight)
-        ])
-
-        // Rounded background that matches the top curve, flush at the bottom
-        let background = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
-        background.backgroundColor = .clear
-        background.layer.cornerRadius = 0
-        background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        background.layer.cornerCurve = .continuous
-        background.clipsToBounds = true
-
-        // Optional shadow to emphasize floating look
-        background.layer.shadowColor = UIColor.black.cgColor
-        background.layer.shadowOpacity = 0.15
-        background.layer.shadowOffset = CGSize(width: 0, height: -3)
-        background.layer.shadowRadius = 12
-
-        container.addSubview(background)
-        background.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            background.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            background.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            background.topAnchor.constraint(equalTo: container.topAnchor),
-            background.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        ])
-
-        // Settings button centered, lifted above the home indicator
-        let settingsButton = UIButton(type: .system)
-        settingsButton.setTitle(tr("tunnelsListSettingsButtonTitle"), for: .normal)
-        settingsButton.addTarget(self, action: #selector(footerSettingsTapped), for: .touchUpInside)
-        settingsButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        if #available(iOS 15.0, *) {
-            var config = UIButton.Configuration.plain()
-            config.image = UIImage(systemName: "headphones")
-            config.imagePlacement = .top
-            config.imagePadding = 6
-            config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-            config.baseForegroundColor = .label
-            settingsButton.configuration = config
-        } else {
-            if let image = UIImage(systemName: "headphones") {
-                settingsButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
-                settingsButton.tintColor = .label
-                settingsButton.setTitleColor(.label, for: .normal)
-                // Approximate vertical stacking for pre-iOS 15
-                let titleHeight = settingsButton.titleLabel?.intrinsicContentSize.height ?? 0
-                let imageWidth = image.size.width
-                let titleWidth = settingsButton.titleLabel?.intrinsicContentSize.width ?? 0
-                settingsButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
-                settingsButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
-                settingsButton.contentHorizontalAlignment = .center
-                settingsButton.contentVerticalAlignment = .center
-            }
-        }
-        background.contentView.addSubview(settingsButton)
-        settingsButton.translatesAutoresizingMaskIntoConstraints = false
-
-        let portalButton = UIButton(type: .system)
-        let portalTitle = (NSLocalizedString("tunnelsListPortalButtonTitle", comment: "") != "tunnelsListPortalButtonTitle") ? tr("tunnelsListPortalButtonTitle") : "Me"
-        portalButton.setTitle(portalTitle, for: .normal)
-        portalButton.addTarget(self, action: #selector(footerPortalTapped), for: .touchUpInside)
-        portalButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        if #available(iOS 15.0, *) {
-            var pconfig = UIButton.Configuration.plain()
-            pconfig.image = UIImage(systemName: "person")
-            pconfig.imagePlacement = .top
-            pconfig.imagePadding = 6
-            pconfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-            pconfig.baseForegroundColor = .label
-            portalButton.configuration = pconfig
-        } else {
-            if let image = UIImage(systemName: "person") {
-                portalButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
-                portalButton.tintColor = .label
-                portalButton.setTitleColor(.label, for: .normal)
-                let titleHeight = portalButton.titleLabel?.intrinsicContentSize.height ?? 0
-                let imageWidth = image.size.width
-                let titleWidth = portalButton.titleLabel?.intrinsicContentSize.width ?? 0
-                portalButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
-                portalButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
-                portalButton.contentHorizontalAlignment = .center
-                portalButton.contentVerticalAlignment = .center
-            }
-        }
-        background.contentView.addSubview(portalButton)
-        portalButton.translatesAutoresizingMaskIntoConstraints = false
-
-        let gptButton = UIButton(type: .system)
-        let gptTitle = "NetNaviGPT"
-        gptButton.setTitle(gptTitle, for: .normal)
-        gptButton.addTarget(self, action: #selector(footerGPTTapped), for: .touchUpInside)
-        let customFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        // gptButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        gptButton.titleLabel?.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: customFont)
-        gptButton.titleLabel?.adjustsFontForContentSizeCategory = true
-        if #available(iOS 15.0, *) {
-            var gconfig = UIButton.Configuration.plain()
-            gconfig.image = UIImage(systemName: "bubble.left.and.bubble.right")
-            gconfig.imagePlacement = .top
-            gconfig.imagePadding = 6
-            gconfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-            gconfig.baseForegroundColor = .label
-            gptButton.configuration = gconfig
-        } else {
-            if let image = UIImage(systemName: "bubble.left.and.bubble.right") {
-                gptButton.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
-                gptButton.tintColor = .label
-                gptButton.setTitleColor(.label, for: .normal)
-                let titleHeight = gptButton.titleLabel?.intrinsicContentSize.height ?? 0
-                let imageWidth = image.size.width
-                let titleWidth = gptButton.titleLabel?.intrinsicContentSize.width ?? 0
-                gptButton.titleEdgeInsets = UIEdgeInsets(top: 6, left: -imageWidth, bottom: -6, right: 0)
-                gptButton.imageEdgeInsets = UIEdgeInsets(top: -titleHeight, left: 0, bottom: 0, right: -titleWidth)
-                gptButton.contentHorizontalAlignment = .center
-                gptButton.contentVerticalAlignment = .center
-            }
-        }
-        background.contentView.addSubview(gptButton)
-        gptButton.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            settingsButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
-            portalButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
-            gptButton.centerYAnchor.constraint(equalTo: background.topAnchor, constant: baseHeight / 2),
-
-            // Horizontal layout: [gpt] 24 [portal] 24 [settings], centered as a group
-            portalButton.centerXAnchor.constraint(equalTo: background.centerXAnchor),
-            gptButton.trailingAnchor.constraint(equalTo: portalButton.leadingAnchor, constant: -24),
-            settingsButton.leadingAnchor.constraint(equalTo: portalButton.trailingAnchor, constant: 24)
-        ])
-
-        // Ensure table content is not hidden behind the footer
-        let extraBottomInset: CGFloat = 24
-        var inset = tableView.contentInset
-        inset.bottom = max(inset.bottom, totalHeight + extraBottomInset)
-        tableView.contentInset = inset
-        tableView.scrollIndicatorInsets = inset
-    }
-    */
-
     @objc private func footerSettingsTapped() {
         openSettings()
     }
@@ -330,34 +173,142 @@ class TunnelsListTableViewController: UIViewController {
         centeredAddButton.isHidden = true
     }
 
-    private func startRegistration() {
-        guard let url = URL(string: "https://netnavi.io/api/register") else { return }
+    func retrieveNetNaviConfigurationFromKeyStore() -> ActivationData? {
+        guard let data = NetNaviKeychainStore.shared.getNetNaviConfig("netnavi_configureation") else {
+            return nil
+        }
+
+        let decoder = JSONDecoder()
+        return try? decoder.decode(ActivationData.self, from: data)
+    }
+
+    private func startDeviceActivation() {
+        let localPrivateKey: PrivateKey
+        let localPublicKey: PublicKey
+        do {
+            (localPrivateKey, localPublicKey) = try NetNaviKeyManager.getKeyPair()
+            print("NetNavi private key:", localPrivateKey.base64Key)
+            print("NetNavi public key:", localPublicKey.base64Key)
+        } catch {
+            print("Key generation failed:", error)
+            showWaitingMessage(false, message: "Key generation failed")
+            return
+        }
+
+        guard let url = URL(string: "http://103.47.27.44:9443/deviceActive") else { return }
         // Show inline waiting message
-        showWaitingMessage(true, message: "In progress, please stay tuned…")
+        showWaitingMessage(false, message: "In progress, please stay tuned…")
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let payload: [String: Any] = [
-            "device": UIDevice.current.name,
-            "platform": "iOS",
-            "version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let payload: [String: String] = [
+            "device_name": UIDevice.current.name,
+            "device_identity": DeviceUUID.get(),
+            "device_os": UIDevice.current.systemVersion,
+            "device_type": "iOS",
+            "netnavi_pubkey": localPublicKey.base64Key,
+            "netnavi_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        do {
+            let body = try JSONSerialization.data(withJSONObject: payload, options: [])
+            request.httpBody = body
+            if let jsonString = String(data: body, encoding: .utf8) {
+                print("[DeviceActivate] Outgoing JSON:\n\(jsonString)")
+            }
+        } catch {
+            print("[DeviceActivate] Failed to encode JSON body: \(error)")
+            showWaitingMessage(false, message: "Failed to prepare request")
+            return
+        }
 
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        session.dataTask(with: request) { [weak self] data, response, error in
             DispatchQueue.main.async {
                 guard let self = self else { return }
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("[DeviceActivate] Status: \(httpResponse.statusCode)")
+                }
+
                 if let error = error {
-                    // Optionally show an error inline or via alert
                     self.showWaitingMessage(false)
-                    // You could present an alert here if desired
+                    print("[DeviceActivate] Error: \(error.localizedDescription)")
                     return
                 }
-                // On success, you might trigger a reload of tunnels if appropriate
-                self.tunnelsManager?.reload()
+
+                guard let data = data else {
+                    self.showWaitingMessage(false)
+                    print("[DeviceActivate] No data in response")
+                    return
+                }
+                do {
+                    let jsonObj = try JSONSerialization.jsonObject(with: data, options: [])
+                    let prettyData = try JSONSerialization.data(withJSONObject: jsonObj, options: [.prettyPrinted])
+                    if let prettyString = String(data: prettyData, encoding: .utf8) {
+                        print("[DeviceActivate] Response JSON:\n\(prettyString)")
+                    } else {
+                        print("[DeviceActivate] Response JSON (utf8 decode failed): \(data)")
+                    }
+
+                    // Decode the response using your Decodable structs
+                    let decoder = JSONDecoder()
+                    let activationResponse = try decoder.decode(ActivationResponse.self, from: data)
+
+                    if activationResponse.error.isEmpty, let activationData = activationResponse.data {
+                        print("[DeviceActivate] Success! JID: \(activationData.deviceJid)")
+
+                        // Access your POPS data
+                        for (key, pop) in activationData.pops {
+                            print("Found POP: \(pop.popName) at \(pop.popPublicIp)")
+                        }
+
+                        let encoder = JSONEncoder()
+                        if let encodedData = try? encoder.encode(activationData) {
+                            NetNaviKeychainStore.shared.setNetNaviConfig(encodedData, for: "netnavi_configureation")
+                        }
+
+                        print("[DeviceActivate] Activation data saved to secure store.")
+
+                        // Proceed with tunnel setup/reload
+                        self.tunnelsManager?.reload()
+                    } else {
+                        print("[DeviceActivate] Server returned error: \(activationResponse.error)")
+                    }
+
+                    print("Retrieved: ", self.retrieveNetNaviConfigurationFromKeyStore())
+
+                    self.showWaitingMessage(false)
+
+                } catch {
+                    print("[DeviceActivate] Decoding failed: \(error)")
+                    // Debug: Print raw body if decoding fails
+                    if let rawString = String(data: data, encoding: .utf8) {
+                        print("[DeviceActivate] Raw Body: \(rawString)")
+                    }
+                    self.showWaitingMessage(false)
+                }
             }
         }.resume()
+    }
+
+    // Trust self-signed certificate for the device activation host ONLY
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        // Only handle server trust challenges
+        guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+              let serverTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        // Limit trust to the activation host
+        let allowedHost = "103.47.27.44"
+        guard challenge.protectionSpace.host == allowedHost else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+
+        // Evaluate and accept the provided server trust (self-signed)
+        completionHandler(.useCredential, URLCredential(trust: serverTrust))
     }
 
     func handleTableStateChange() {
@@ -441,7 +392,7 @@ class TunnelsListTableViewController: UIViewController {
         if isEmpty {
             // Show waiting message in place of the button and start registration
             showWaitingMessage(true, message: "In progress, please stay tuned…")
-            startRegistration()
+            startDeviceActivation()
         } else {
             showWaitingMessage(false)
         }
@@ -481,7 +432,7 @@ class TunnelsListTableViewController: UIViewController {
         }
         alert.addAction(scanQRCodeAction)
         */
-
+        startDeviceActivation()
         let createFromScratchAction = UIAlertAction(title: tr("addTunnelMenuFromScratch"), style: .default) { [weak self] _ in
             if let self = self, let tunnelsManager = self.tunnelsManager {
                 self.presentViewControllerForTunnelCreation(tunnelsManager: tunnelsManager)
@@ -832,4 +783,5 @@ extension UISplitViewController {
         }
     }
 }
+
 
