@@ -8,14 +8,14 @@ class SettingsTableViewController: UITableViewController {
 
     enum SettingsFields {
         case iosAppVersion
-        case goBackendVersion
+        // case goBackendVersion
         // case exportZipArchive
         case viewLog
 
         var localizedUIString: String {
             switch self {
             case .iosAppVersion: return tr("settingsVersionKeyWireGuardForIOS")
-            case .goBackendVersion: return tr("settingsVersionKeyWireGuardGoBackend")
+            // case .goBackendVersion: return tr("settingsVersionKeyWireGuardGoBackend")
             // case .exportZipArchive: return tr("settingsExportZipButtonTitle")
             case .viewLog: return tr("settingsViewLogButtonTitle")
             }
@@ -23,7 +23,8 @@ class SettingsTableViewController: UITableViewController {
     }
 
     let settingsFieldsBySection: [[SettingsFields]] = [
-        [.iosAppVersion, .goBackendVersion],
+        // [.iosAppVersion, .goBackendVersion],
+        [.iosAppVersion],
         // [.exportZipArchive],
         [.viewLog]
     ]
@@ -140,7 +141,8 @@ extension SettingsTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let field = settingsFieldsBySection[indexPath.section][indexPath.row]
-        if field == .iosAppVersion || field == .goBackendVersion {
+        // if field == .iosAppVersion || field == .goBackendVersion {
+        if field == .iosAppVersion {
             let cell: KeyValueCell = tableView.dequeueReusableCell(for: indexPath)
             cell.copyableGesture = false
             cell.key = field.localizedUIString
@@ -150,9 +152,9 @@ extension SettingsTableViewController {
                     appVersion += " (\(appBuild))"
                 }
                 cell.value = appVersion
-            } else if field == .goBackendVersion {
+            }/* else if field == .goBackendVersion {
                 cell.value = WIREGUARD_GO_VERSION
-            }
+            }*/
             return cell
         /*
         } else if field == .exportZipArchive {

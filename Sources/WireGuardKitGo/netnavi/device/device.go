@@ -25,6 +25,7 @@ type Device struct {
     netstack    *stack.Stack
     linkEP      *channel.Endpoint
     tunIP       net.IP
+    splitter *SplitTrafficNetstack
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.
@@ -325,6 +326,9 @@ func NewDevice(tunDevice tun.Device, bind conn.Bind, logger *Logger) *Device {
 	device.queue.encryption.wg.Add(1) // RoutineReadFromTUN
 	go device.RoutineReadFromTUN()
 	go device.RoutineTUNEventReader()
+ 
+    // NetNavi FWDD
+    device.NewSplitTrafficHandler()
 
 	return device
 }

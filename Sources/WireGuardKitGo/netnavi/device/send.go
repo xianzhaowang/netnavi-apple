@@ -42,6 +42,11 @@ import (
  * the content is preceded by enough "junk" to contain the transport header
  * (to allow the construction of transport messages in-place)
  */
+ 
+ const (
+    IPv4ProtocolOffset = 9
+    IPProtocolTCP      = 6
+)
 
 type QueueOutboundElement struct {
 	sync.Mutex
@@ -211,6 +216,13 @@ func (device *Device) RoutineReadFromTUN() {
 	}()
 
 	device.log.Verbosef("Routine: TUN reader - started")
+ 
+    /*
+     if device.splitter == nil {
+        device.log.Verbosef("Routine: NetNavi FWDD - started")
+        device.splitter = NewSplitTrafficHandler(device)
+    }
+    */
 
 	var elem *QueueOutboundElement
 
@@ -253,6 +265,23 @@ func (device *Device) RoutineReadFromTUN() {
 			dst := elem.packet[IPv4offsetDst : IPv4offsetDst+net.IPv4len]
 			peer = device.allowedips.Lookup(dst)
 
+            protocol := elem.packet[IPv4ProtocolOffset]
+   
+               if protocol == IPProtocolTCP && device.shouldBypassTunnel(dst) {
+                // Deep copy for the background netstack processor
+                splitPacket := make([]byte, len(elem.packet))
+                copy(splitPacket, elem.packet)
+
+                // Hand off to netstack to manage the TCP state and local dial
+                go device.splitter.ProcessTunPacket(splitPacket)
+
+                // Recycle element and skip WireGuard peer staging
+                device.PutMessageBuffer(elem.buffer)
+                device.PutOutboundElement(elem)
+                elem = nil
+                continue
+            }
+
 		case ipv6.Version:
 			if len(elem.packet) < ipv6.HeaderLen {
 				continue
@@ -271,7 +300,7 @@ func (device *Device) RoutineReadFromTUN() {
         // NetNavi DNS Handler
         if device.isDNSPacket(elem.packet) {
             if device.isClosed() {
-                device.log.Errorf("KKKKKK no ready, skip")
+                device.log.Errorf("NetNavi fwdd yet to be ready, skip")
             } else {
                 // 1. MAKE A DEEP COPY of the packet data
                 // This prevents the data from being overwritten by the next loop iteration
@@ -289,7 +318,6 @@ func (device *Device) RoutineReadFromTUN() {
                 continue
             }
         }
-  
 		if peer.isRunning.Load() {
 			peer.StagePacket(elem)
 			elem = nil
