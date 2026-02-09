@@ -84,10 +84,16 @@ func wgSetLogger(context, loggerFn uintptr) {
 
 //export wgTurnOn
 func wgTurnOn(settings *C.char, tunFd int32) int32 {
-    // TODO: tuning purpose
-    // runtime.GOMAXPROCS(1)
+    if runtime.NumCPU() > 2 {
+        runtime.GOMAXPROCS(2)
+    } else {
+        runtime.GOMAXPROCS(1)
+    }
+    debug.SetGCPercent(100)
+    debug.SetMemoryLimit(45 * 1024 * 1024)
 	logger := &device.Logger{
-		Verbosef: CLogger(0).Printf,
+		// Verbosef: CLogger(0).Printf,
+        Verbosef: func(format string, args ...interface{}) {},
 		Errorf:   CLogger(1).Printf,
 	}
 	dupTunFd, err := unix.Dup(int(tunFd))
@@ -120,6 +126,9 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
 
 	dev.Up()
 	logger.Verbosef("Device started")
+    
+    // NetNavi perf profiling
+    // go dev.RoutineMemoryMonitor()
 
 	var i int32
 	for i = 0; i < math.MaxInt32; i++ {

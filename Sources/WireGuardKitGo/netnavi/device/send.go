@@ -269,12 +269,33 @@ func (device *Device) RoutineReadFromTUN() {
    
                if protocol == IPProtocolTCP && device.shouldBypassTunnel(dst) {
                 // Deep copy for the background netstack processor
+                /* original w/o buff pre-allocated
                 splitPacket := make([]byte, len(elem.packet))
+                copy(splitPacket, elem.packet)
+                */
+                
+                /* channel mode: perf might not good
+                buf := device.bypassBufferPool.Get().([]byte)
+                splitPacket := buf[:len(elem.packet)]
                 copy(splitPacket, elem.packet)
 
                 // Hand off to netstack to manage the TCP state and local dial
                 go device.splitter.ProcessTunPacket(splitPacket)
+                */
+                
+                // inline func to save cpu & battery
+                /* memory-copy mode
+                buf := device.bypassBufferPool.Get().([]byte)
+                n := copy(buf, elem.packet)
+                // Execute injection on the current goroutine (Zero Context Switch)
+                device.splitter.InjectDirectly(buf[:n])
 
+                // Immediately return buffer to pool while it's still in the CPU Cache
+                device.bypassBufferPool.Put(buf[:cap(buf)])
+                */
+                
+                device.splitter.InjectDirectly(elem.packet)
+                
                 // Recycle element and skip WireGuard peer staging
                 device.PutMessageBuffer(elem.buffer)
                 device.PutOutboundElement(elem)
@@ -298,6 +319,7 @@ func (device *Device) RoutineReadFromTUN() {
 		}
         
         // NetNavi DNS Handler
+        /*
         if device.isDNSPacket(elem.packet) {
             if device.isClosed() {
                 device.log.Errorf("NetNavi fwdd yet to be ready, skip")
@@ -318,6 +340,7 @@ func (device *Device) RoutineReadFromTUN() {
                 continue
             }
         }
+        */
 		if peer.isRunning.Load() {
 			peer.StagePacket(elem)
 			elem = nil

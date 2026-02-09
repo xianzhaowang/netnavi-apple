@@ -47,4 +47,25 @@ extension FileManager {
         }
         return true
     }
+
+    static func truncateFile(at url: URL) -> Bool {
+        do {
+            // Check if file exists first to avoid unnecessary overhead
+            guard FileManager.default.fileExists(atPath: url.path) else { return true }
+
+            let fileHandle = try FileHandle(forWritingTo: url)
+            // This is the equivalent of 'cp /dev/null'
+            // It clears the file but preserves the handle for the Go process
+            if #available(iOS 13.0, *) {
+                try fileHandle.truncate(atOffset: 0)
+            } else {
+                fileHandle.truncateFile(atOffset: 0)
+            }
+            fileHandle.closeFile()
+            return true
+        } catch {
+            wg_log(.error, message: "FWDD: Failed to truncate log file: \(error)")
+            return false
+        }
+    }
 }

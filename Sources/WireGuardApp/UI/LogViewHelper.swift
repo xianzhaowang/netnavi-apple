@@ -54,4 +54,46 @@ public class LogViewHelper {
             }
         }
     }
+
+    // TODO: logging only after restart/wgTurnOn
+    var isRotating = false
+    func clearLog() {
+        guard let logFileURL = FileManager.logFileURL else { return }
+        let path = logFileURL.path
+
+        // 1. CRITICAL: Block UI to prevent the memcpy crash
+        self.isRotating = true
+        let logToClose = self.log
+
+        let coordinator = NSFileCoordinator()
+        var error: NSError?
+
+        coordinator.coordinate(writingItemAt: logFileURL, options: [], error: &error) { url in
+            do {
+                if FileManager.default.fileExists(atPath: url.path) {
+                    // 2. TRUNCATE ONLY: No archive created, history is deleted immediately
+                    let fileHandle = try FileHandle(forWritingTo: url)
+                    fileHandle.truncateFile(atOffset: 0)
+                    try fileHandle.synchronize()
+                    fileHandle.closeFile()
+                }
+            } catch {
+                print("FWDD: Truncate failed: \(error)")
+            }
+        }
+
+        // 3. RE-OPEN & SWAP
+        if let newLog = open_log(path) {
+            self.log = newLog
+            self.cursor = 0
+
+            // 4. Safety delay to let background C-threads finish before unblocking
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                close_log(logToClose)
+                self.isRotating = false
+            }
+        } else {
+            self.isRotating = false
+        }
+    }
 }

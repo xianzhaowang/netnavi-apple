@@ -12,7 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var isLaunchedForSpecificAction = false
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Logger.configureGlobal(tagged: "APP", withFilePath: FileManager.logFileURL?.path)
+        Logger.configureGlobal(tagged: "NNUI", withFilePath: FileManager.logFileURL?.path)
 
         if let launchOptions = launchOptions {
             if launchOptions[.url] != nil || launchOptions[.shortcutItem] != nil {

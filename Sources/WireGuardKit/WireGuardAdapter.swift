@@ -418,7 +418,7 @@ public class WireGuardAdapter {
     /// Helper method used by network path monitor.
     /// - Parameter path: new network path
     private func didReceivePathUpdate(path: Network.NWPath) {
-        self.logHandler(.verbose, "Network change detected with \(path.status) route and interface order \(path.availableInterfaces)")
+        self.logHandler(.verbose, "Network change detected with \(path.status) route and working order \(path.availableInterfaces)")
 
         #if os(macOS)
         if case .started(let handle, _) = self.state {
@@ -435,7 +435,7 @@ public class WireGuardAdapter {
                 wgDisableSomeRoamingForBrokenMobileSemantics(handle)
                 wgBumpSockets(handle)
             } else {
-                self.logHandler(.verbose, "Connectivity offline, pausing backend.")
+                self.logHandler(.verbose, "NetNavi connectivity offline, pausing fwdd")
 
                 self.state = .temporaryShutdown(settingsGenerator)
                 wgTurnOff(handle)
@@ -444,7 +444,7 @@ public class WireGuardAdapter {
         case .temporaryShutdown(let settingsGenerator):
             guard path.status.isSatisfiable else { return }
 
-            self.logHandler(.verbose, "Connectivity online, resuming backend.")
+            self.logHandler(.verbose, "NetNavi connectivity online, resuming fwdd")
 
             do {
                 try self.setNetworkSettings(settingsGenerator.generateNetworkSettings())
@@ -457,7 +457,7 @@ public class WireGuardAdapter {
                     settingsGenerator
                 )
             } catch {
-                self.logHandler(.error, "Failed to restart backend: \(error.localizedDescription)")
+                self.logHandler(.error, "Failed to restart fwdd: \(error.localizedDescription)")
             }
 
         case .stopped:

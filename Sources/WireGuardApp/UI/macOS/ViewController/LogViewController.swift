@@ -76,6 +76,14 @@ class LogViewController: NSViewController {
         return button
     }()
 
+    let clearButton: NSButton = {
+        let button = NSButton()
+        button.title = tr("macLogButtonTitleClear")
+        button.setButtonType(.momentaryPushIn)
+        button.bezelStyle = .rounded
+        return button
+    }()
+
     let logViewHelper: LogViewHelper?
     var logEntries = [LogViewHelper.LogEntry]()
     var isFetchingLogEntries = false
@@ -103,6 +111,9 @@ class LogViewController: NSViewController {
         saveButton.action = #selector(saveClicked)
         saveButton.isEnabled = false
 
+        clearButton.target = self
+        clearButton.action = #selector(clearClicked)
+
         let clipView = NSClipView()
         clipView.documentView = tableView
         scrollView.contentView = clipView
@@ -126,6 +137,7 @@ class LogViewController: NSViewController {
         let internalSpacing: CGFloat = 10
 
         let buttonRowStackView = NSStackView()
+        buttonRowStackView.addView(clearButton, in: .leading)
         buttonRowStackView.addView(closeButton, in: .leading)
         buttonRowStackView.addView(saveButton, in: .trailing)
         buttonRowStackView.orientation = .horizontal
@@ -238,6 +250,12 @@ class LogViewController: NSViewController {
 
     @objc func closeClicked() {
         presentingViewController?.dismiss(self)
+    }
+
+    @objc func clearClicked() {
+        logViewHelper?.clearLog()
+        logEntries.removeAll()
+        tableView.reloadData()
     }
 
     @objc func copy(_ sender: Any?) {

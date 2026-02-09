@@ -26,6 +26,7 @@ type Device struct {
     linkEP      *channel.Endpoint
     tunIP       net.IP
     splitter *SplitTrafficNetstack
+    bypassBufferPool sync.Pool
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.
@@ -315,6 +316,10 @@ func NewDevice(tunDevice tun.Device, bind conn.Bind, logger *Logger) *Device {
 
 	cpus := runtime.NumCPU()
 	device.state.stopping.Wait()
+    // NetNavi perf tuning -  save battery
+    if cpus > 2 {
+        cpus = 2
+    }
 	device.queue.encryption.wg.Add(cpus) // One for each RoutineHandshake
 	for i := 0; i < cpus; i++ {
 		go device.RoutineEncryption(i + 1)
@@ -329,6 +334,19 @@ func NewDevice(tunDevice tun.Device, bind conn.Bind, logger *Logger) *Device {
  
     // NetNavi FWDD
     device.NewSplitTrafficHandler()
+    
+    /* ONLY need for memcopy in RoutineReadFromTUN
+    device.bypassBufferPool = sync.Pool{
+        New: func() interface{} {
+            // Pre-allocate a slice with a 1500-byte capacity, MaxContentSize is safer
+            return make([]byte, MaxContentSize)
+        },
+    }
+
+    for i := 0; i < 256; i++ {
+        device.bypassBufferPool.Put(make([]byte, MaxContentSize))
+    }
+    */
 
 	return device
 }

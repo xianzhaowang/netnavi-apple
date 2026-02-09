@@ -69,7 +69,7 @@ class TunnelsManager {
 
         var interface = InterfaceConfiguration(privateKey: localPrivateKey)
         interface.addresses = [ipRange]
-        interface.mtu = 1380
+        interface.mtu = 1280
         interface.dns = dnsServers.map { DNSServer(from: $0)! }
 
         var peer = PeerConfiguration(publicKey: serverPublicKey)
@@ -81,6 +81,15 @@ class TunnelsManager {
         manager.setTunnelConfiguration(tunnelConfiguration)
         manager.localizedDescription = tunnelConfiguration.name
         manager.isEnabled = true
+
+        // --- ON-DEMAND: AUTO-CONNECT ON ANY NETWORK ---
+        let connectRule = NEOnDemandRuleConnect()
+        // This covers both Wi-Fi and Cellular (LTE/5G)
+        connectRule.interfaceTypeMatch = .any
+
+        manager.onDemandRules = [connectRule]
+        manager.isOnDemandEnabled = true
+        // --- END ON-DEMAND ---
 
         // Save and reload
         manager.saveToPreferences { error in

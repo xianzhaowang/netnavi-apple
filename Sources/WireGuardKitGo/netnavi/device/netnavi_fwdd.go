@@ -1,4 +1,3 @@
-
 /*
  *
  * Copyright (C) Freecomm. All Rights Reserved.
@@ -10,8 +9,8 @@ import (
     "io"
     "net"
     "net/netip"
-    "syscall"
     "strconv"
+    "syscall"
     
     "gvisor.dev/gvisor/pkg/tcpip"
     "gvisor.dev/gvisor/pkg/tcpip/adapters/gonet"
@@ -31,10 +30,13 @@ type SplitTrafficNetstack struct {
     linkEP                  *channel.Endpoint
     device                  *Device
     physicalInterfaceIndex  int
+    
+    packetChan chan []byte
 }
 
 func (device *Device) NewSplitTrafficHandler() {
     s := &SplitTrafficNetstack{
+        packetChan: make(chan []byte, 1024), // Buffer to prevent blocking WireGuard
         device: device,
     }
     nicName := ""
@@ -57,7 +59,21 @@ func (device *Device) NewSplitTrafficHandler() {
             // udp.NewProtocol,
         },
     })
+
+    const maxTCPBuf = 16384
     
+    s.stack.SetTransportProtocolOption(tcp.ProtocolNumber, &tcpip.TCPReceiveBufferSizeRangeOption{
+        Min:     4096,
+        Default: maxTCPBuf,
+        Max:     maxTCPBuf * 2,
+    })
+
+    s.stack.SetTransportProtocolOption(tcp.ProtocolNumber, &tcpip.TCPSendBufferSizeRangeOption{
+        Min:     4096,
+        Default: maxTCPBuf,
+        Max:     maxTCPBuf * 2,
+    })
+
     // Create NIC in the userspace stack
     if err := s.stack.CreateNIC(nicID, s.linkEP); err != nil {
         if device.log != nil {
@@ -97,6 +113,9 @@ func (device *Device) NewSplitTrafficHandler() {
     // Set up TCP forwarder to intercept TCP connections
     tcpForwarder := tcp.NewForwarder(s.stack, 0, 1024, s.handleTCP)
     s.stack.SetTransportProtocolHandler(tcp.ProtocolNumber, tcpForwarder.HandlePacket)
+    
+    // channel mode
+    // go s.packetWorker()
     
     go s.loopWriteToTun()
     
@@ -224,6 +243,7 @@ func (s *SplitTrafficNetstack) handleLocalRoute(conn net.Conn, remoteTarget stri
     <-done
 }
 
+/* original w/o buff pre-allocated
 // ProcessTunPacket injects a packet into the userspace network stack
 func (s *SplitTrafficNetstack) ProcessTunPacket(packet []byte) {
     if s.linkEP == nil {
@@ -252,6 +272,91 @@ func (s *SplitTrafficNetstack) ProcessTunPacket(packet []byte) {
     defer pkt.DecRef()
     // s.device.log.Errorf("NetNavi: Local forwarding injection")
     s.linkEP.InjectInbound(proto, pkt)
+}
+*/
+
+/* channel mode
+// ProcessTunPacket now accepts the already-copied buffer from RoutineReadFromTUN
+func (s *SplitTrafficNetstack) ProcessTunPacket(packet []byte) {
+    // Pass the already-allocated pooled buffer to the worker via channel
+    select {
+    case s.packetChan <- packet:
+        // Success: the worker now owns this buffer and will return it to the pool
+    default:
+        // Queue full: drop packet to prevent blocking the TUN reader
+        // IMPORTANT: We must return it to the pool here because the worker won't get it
+        s.device.bypassBufferPool.Put(packet[:cap(packet)])
+    }
+}
+
+func (s *SplitTrafficNetstack) packetWorker() {
+    for packet := range s.packetChan {
+        // Determine protocol
+        version := packet[0] >> 4
+        proto := header.IPv4ProtocolNumber
+        if version == 6 {
+            proto = header.IPv6ProtocolNumber
+        }
+
+        // Inject into gVisor stack
+        // Note: buffer.MakeWithData creates a view; it doesn't necessarily
+        // prevent us from recycling the underlying 'packet' slice immediately after InjectInbound
+        // v := buffer.NewViewWithData(packet)
+        pkt := stack.NewPacketBuffer(stack.PacketBufferOptions{
+            Payload: buffer.MakeWithData(packet),
+            // This makes it safe to return 'packet' to the pool immediately.
+            // Payload: buffer.MakeWithView(v),
+        })
+        
+        s.linkEP.InjectInbound(proto, pkt)
+        pkt.DecRef()
+
+        // Return the buffer to the pool defined in your Device struct
+        s.device.bypassBufferPool.Put(packet[:cap(packet)])
+    }
+}
+*/
+
+// memory-copy mode
+func (s *SplitTrafficNetstack) InjectDirectly(packet []byte) {
+    // 1. Detect Protocol (Fast)
+    version := packet[0] >> 4
+    proto := header.IPv4ProtocolNumber
+    if version == 6 {
+        proto = header.IPv6ProtocolNumber
+    }
+
+    // 2. Create PacketBuffer (No Clone needed because we wait for injection)
+    pkt := stack.NewPacketBuffer(stack.PacketBufferOptions{
+        Payload: buffer.MakeWithData(packet),
+    })
+
+    // 3. Synchronous Injection
+    // For gVisor channel.Endpoint, this usually copies to internal stack buffers
+    // before returning, making it safe for the TUN loop to continue.
+    s.linkEP.InjectInbound(proto, pkt)
+    pkt.DecRef()
+}
+
+func (s *SplitTrafficNetstack) InjectDirectlyV2(packet []byte) {
+    // 1. Detect Protocol (Fast)
+    version := packet[0] >> 4
+    proto := header.IPv4ProtocolNumber
+    if version == 6 {
+        proto = header.IPv6ProtocolNumber
+    }
+
+    // 2. Create PacketBuffer (No Clone needed because we wait for injection)
+    v := buffer.NewViewWithData(packet)
+    pkt := stack.NewPacketBuffer(stack.PacketBufferOptions{
+        Payload: buffer.MakeWithView(v),
+    })
+
+    // 3. Synchronous Injection
+    // For gVisor channel.Endpoint, this usually copies to internal stack buffers
+    // before returning, making it safe for the TUN loop to continue.
+    s.linkEP.InjectInbound(proto, pkt)
+    pkt.DecRef()
 }
 
 func (device *Device) shouldBypassTunnel(dst net.IP) bool {

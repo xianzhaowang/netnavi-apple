@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        Logger.configureGlobal(tagged: "APP", withFilePath: FileManager.logFileURL?.path)
+        Logger.configureGlobal(tagged: "NNUI", withFilePath: FileManager.logFileURL?.path)
         registerLoginItem(shouldLaunchAtLogin: true)
 
         var isLaunchedAtLogin = false

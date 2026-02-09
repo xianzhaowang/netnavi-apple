@@ -342,7 +342,8 @@ final class NetNaviAgentDetailInlineCell: UITableViewCell {
     private func startTimer() {
         stopTimer()
         reloadRuntime()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+        // increase the withTimeInterval from 1 to 10s to save battery
+        timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
             self?.reloadRuntime()
         }
     }
@@ -384,8 +385,9 @@ final class NetNaviAgentDetailInlineCell: UITableViewCell {
 
         renderRuntime(nil) // always reset live tile once
 
+        // increase the withTimeInterval from 1 to 10s to save battery
         if t.status == .active {
-            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
                 self?.reloadRuntime()
             }
             reloadRuntime()

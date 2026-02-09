@@ -61,7 +61,21 @@ class LogViewController: UIViewController {
     override func viewDidLoad() {
         title = tr("logViewTitle")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveTapped(sender:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(clearTapped))
     }
+
+    @objc func clearTapped() {
+        logViewHelper?.clearLog()
+        // Remove the log file from disk to ensure full clear
+        if let logFileURL = FileManager.logFileURL {
+            _ = FileManager.deleteFile(at: logFileURL)
+        }
+        textView.text = ""
+        isNextLineHighlighted = false
+        // Reset the cursor/state of logViewHelper to reflect cleared log
+        // logViewHelper?.resetCursor() // Removed because LogViewHelper does not have resetCursor()
+    }
+
 
     func updateLogEntries() {
         guard !isFetchingLogEntries else { return }
@@ -96,7 +110,6 @@ class LogViewController: UIViewController {
             }
         }
     }
-
     func startUpdatingLogEntries() {
         updateLogEntries()
         updateLogEntriesTimer?.invalidate()
@@ -113,7 +126,7 @@ class LogViewController: UIViewController {
         let dateFormatter = ISO8601DateFormatter()
         dateFormatter.formatOptions = [.withFullDate, .withTime, .withTimeZone] // Avoid ':' in the filename
         let timeStampString = dateFormatter.string(from: Date())
-        let destinationURL = destinationDir.appendingPathComponent("wireguard-log-\(timeStampString).txt")
+        let destinationURL = destinationDir.appendingPathComponent("netnavi-audit-log-\(timeStampString).txt")
 
         DispatchQueue.global(qos: .userInitiated).async {
 

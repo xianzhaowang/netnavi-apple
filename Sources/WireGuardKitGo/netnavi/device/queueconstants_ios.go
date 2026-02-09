@@ -11,11 +11,12 @@ package device
 // These are vars instead of consts, because heavier network extensions might want to reduce
 // them further.
 var (
-	QueueStagedSize                   = 128
-	QueueOutboundSize                 = 1024
-	QueueInboundSize                  = 1024
-	QueueHandshakeSize                = 1024
-	PreallocatedBuffersPerPool uint32 = 1024
+    // down by deviding 4
+	QueueStagedSize                   = 128/4
+	QueueOutboundSize                 = 1024/4
+	QueueInboundSize                  = 1024/4
+	QueueHandshakeSize                = 1024/4
+	PreallocatedBuffersPerPool uint32 = 1024/4
 )
 
 const MaxSegmentSize = 1700
