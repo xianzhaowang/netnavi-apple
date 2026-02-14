@@ -129,6 +129,8 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
     
     // NetNavi perf profiling
     // go dev.RoutineMemoryMonitor()
+    
+    dev.InitNetNaviGeoDB()
 
 	var i int32
 	for i = 0; i < math.MaxInt32; i++ {

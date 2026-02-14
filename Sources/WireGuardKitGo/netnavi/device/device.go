@@ -19,14 +19,18 @@ import (
     
     "gvisor.dev/gvisor/pkg/tcpip/link/channel"
     "gvisor.dev/gvisor/pkg/tcpip/stack"
+    
+    "github.com/oschwald/maxminddb-golang/v2"
 )
 
 type Device struct {
-    netstack    *stack.Stack
-    linkEP      *channel.Endpoint
-    tunIP       net.IP
-    splitter *SplitTrafficNetstack
-    bypassBufferPool sync.Pool
+    netstack            *stack.Stack
+    linkEP              channel.Endpoint
+    tunIP               net.IP
+    splitter            *SplitTrafficNetstack
+    bypassBufferPool    sync.Pool
+    geoDB               *maxminddb.Reader
+    geoCache            map[string]string
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.

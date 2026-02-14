@@ -360,10 +360,13 @@ func (s *SplitTrafficNetstack) InjectDirectlyV2(packet []byte) {
 }
 
 func (device *Device) shouldBypassTunnel(dst net.IP) bool {
+    /*
     bypassIPs := map[string]bool{
         "103.47.27.48": true,
         "103.47.27.39": true,
         "1.1.1.1":      false,
     }
     return bypassIPs[dst.String()]
+    */
+    return device.ShouldBypassByCountry(dst, "us")
 }
