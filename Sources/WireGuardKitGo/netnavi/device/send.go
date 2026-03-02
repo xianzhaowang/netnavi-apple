@@ -46,6 +46,7 @@ import (
  const (
     IPv4ProtocolOffset = 9
     IPProtocolTCP      = 6
+    IPProtocolUDP      = 17
 )
 
 type QueueOutboundElement struct {
@@ -266,8 +267,22 @@ func (device *Device) RoutineReadFromTUN() {
 			peer = device.allowedips.Lookup(dst)
 
             protocol := elem.packet[IPv4ProtocolOffset]
+            
+            ihl := int(elem.packet[0]&0x0f) << 2
+            
+            // 1. DROP QUIC: Check if Protocol is UDP (17) AND Port is 443
+            if protocol == 17 && len(elem.packet) >= ihl+4 {
+                dstPort := binary.BigEndian.Uint16(elem.packet[ihl+2 : ihl+4])
+                if dstPort == 443 {
+                    // Drop packet to force fallback to TCP (which your Forwarder handles)
+                    device.PutMessageBuffer(elem.buffer)
+                    device.PutOutboundElement(elem)
+                    elem = nil
+                    continue
+                }
+            }
    
-               if protocol == IPProtocolTCP && device.shouldBypassTunnel(dst) {
+            if protocol == IPProtocolTCP && device.shouldBypassTunnel(dst) {
                 // Deep copy for the background netstack processor
                 /* original w/o buff pre-allocated
                 splitPacket := make([]byte, len(elem.packet))

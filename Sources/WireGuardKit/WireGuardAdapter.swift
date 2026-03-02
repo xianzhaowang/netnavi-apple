@@ -192,7 +192,7 @@ public class WireGuardAdapter {
                 try self.setNetworkSettings(settingsGenerator.generateNetworkSettings())
 
                 let (wgConfig, resolutionResults) = settingsGenerator.uapiConfiguration()
-                self.logEndpointResolutionResults(resolutionResults)
+                // self.logEndpointResolutionResults(resolutionResults)
 
                 self.state = .started(
                     try self.startWireGuardBackend(wgConfig: wgConfig),
@@ -260,7 +260,7 @@ public class WireGuardAdapter {
                 switch self.state {
                 case .started(let handle, _):
                     let (wgConfig, resolutionResults) = settingsGenerator.uapiConfiguration()
-                    self.logEndpointResolutionResults(resolutionResults)
+                    // self.logEndpointResolutionResults(resolutionResults)
 
                     wgSetConfig(handle, wgConfig)
                     #if os(iOS)
@@ -418,7 +418,7 @@ public class WireGuardAdapter {
     /// Helper method used by network path monitor.
     /// - Parameter path: new network path
     private func didReceivePathUpdate(path: Network.NWPath) {
-        self.logHandler(.verbose, "Network change detected with \(path.status) route and working order \(path.availableInterfaces)")
+        self.logHandler(.verbose, "NetNavi network change: \(path.status) route and working order \(path.availableInterfaces)")
 
         #if os(macOS)
         if case .started(let handle, _) = self.state {
@@ -429,7 +429,7 @@ public class WireGuardAdapter {
         case .started(let handle, let settingsGenerator):
             if path.status.isSatisfiable {
                 let (wgConfig, resolutionResults) = settingsGenerator.endpointUapiConfiguration()
-                self.logEndpointResolutionResults(resolutionResults)
+                // self.logEndpointResolutionResults(resolutionResults)
 
                 wgSetConfig(handle, wgConfig)
                 wgDisableSomeRoamingForBrokenMobileSemantics(handle)
@@ -450,7 +450,7 @@ public class WireGuardAdapter {
                 try self.setNetworkSettings(settingsGenerator.generateNetworkSettings())
 
                 let (wgConfig, resolutionResults) = settingsGenerator.uapiConfiguration()
-                self.logEndpointResolutionResults(resolutionResults)
+                // self.logEndpointResolutionResults(resolutionResults)
 
                 self.state = .started(
                     try self.startWireGuardBackend(wgConfig: wgConfig),

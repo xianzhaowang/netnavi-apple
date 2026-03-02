@@ -30,7 +30,7 @@ type Device struct {
     splitter            *SplitTrafficNetstack
     bypassBufferPool    sync.Pool
     geoDB               *maxminddb.Reader
-    geoCache            map[string]string
+    GeoCache            map[string]string
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.

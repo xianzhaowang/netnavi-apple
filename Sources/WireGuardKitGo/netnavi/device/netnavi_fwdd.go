@@ -11,6 +11,7 @@ import (
     "net/netip"
     "strconv"
     "syscall"
+    "time"
     
     "gvisor.dev/gvisor/pkg/tcpip"
     "gvisor.dev/gvisor/pkg/tcpip/adapters/gonet"
@@ -20,7 +21,7 @@ import (
     _ "gvisor.dev/gvisor/pkg/tcpip/network/ipv6"
     "gvisor.dev/gvisor/pkg/tcpip/stack"
     "gvisor.dev/gvisor/pkg/tcpip/transport/tcp"
-    _ "gvisor.dev/gvisor/pkg/tcpip/transport/udp"
+    "gvisor.dev/gvisor/pkg/tcpip/transport/udp"
     "gvisor.dev/gvisor/pkg/buffer"
     "gvisor.dev/gvisor/pkg/waiter"
 )
@@ -56,7 +57,7 @@ func (device *Device) NewSplitTrafficHandler() {
         },
         TransportProtocols: []stack.TransportProtocolFactory{
             tcp.NewProtocol,
-            // udp.NewProtocol,
+            udp.NewProtocol,
         },
     })
 
@@ -111,8 +112,11 @@ func (device *Device) NewSplitTrafficHandler() {
     })
     
     // Set up TCP forwarder to intercept TCP connections
-    tcpForwarder := tcp.NewForwarder(s.stack, 0, 1024, s.handleTCP)
+    tcpForwarder := tcp.NewForwarder(s.stack, 0, 32, s.handleTCP)
     s.stack.SetTransportProtocolHandler(tcp.ProtocolNumber, tcpForwarder.HandlePacket)
+    
+    udpForwarder := udp.NewForwarder(s.stack, s.handleUDP)
+    s.stack.SetTransportProtocolHandler(udp.ProtocolNumber, udpForwarder.HandlePacket)
     
     // channel mode
     // go s.packetWorker()
@@ -201,10 +205,38 @@ func (s *SplitTrafficNetstack) handleTCP(r *tcp.ForwarderRequest) {
     go s.handleLocalRoute(conn, remoteTarget)
 }
 
+func (s *SplitTrafficNetstack) handleUDP(r *udp.ForwarderRequest) {
+    id := r.ID()
+    dstAddr, _ := netip.AddrFromSlice(id.LocalAddress.AsSlice())
+    dstPort := id.LocalPort
+    remoteTarget := net.JoinHostPort(dstAddr.String(), strconv.Itoa(int(dstPort)))
+
+    var wq waiter.Queue
+    // Create the UDP endpoint in the userspace stack
+    ep, err := r.CreateEndpoint(&wq)
+    if err != nil {
+        // Failed to create endpoint, usually due to memory pressure
+        return
+    }
+
+    // Wrap gVisor endpoint into a standard net.PacketConn compatible structure
+    // gonet.NewUDPConn handles the translation for you.
+    conn := gonet.NewUDPConn(&wq, ep)
+    
+    // Use the same forwarding logic as TCP
+    go s.handleLocalRoute(conn, remoteTarget)
+}
+
+
 func (s *SplitTrafficNetstack) handleLocalRoute(conn net.Conn, remoteTarget string) {
     defer conn.Close()
     
     // s.device.log.Errorf("NetNavi: Proxying the local forwarding traffic: %s", remoteTarget)
+    network := "tcp"
+    if _, ok := conn.(*gonet.UDPConn); ok {
+        network = "udp"
+        conn.SetDeadline(time.Now().Add(10 * time.Second))
+    }
     
     dialer := &net.Dialer{
         Control: func(network, address string, c syscall.RawConn) error {
@@ -226,21 +258,36 @@ func (s *SplitTrafficNetstack) handleLocalRoute(conn net.Conn, remoteTarget stri
         },
     }
     
-    localConn, err := dialer.Dial("tcp", remoteTarget)
+    // localConn, err := dialer.Dial("tcp", remoteTarget)
+    localConn, err := dialer.Dial(network, remoteTarget)
     if err != nil {
         s.device.log.Errorf("NetNavi: Failed to dial destination %s: %v", remoteTarget, err)
         return
     }
     defer localConn.Close()
 
+    // Use a small, fixed-size buffer to stay under 50MB
+    // 4KB is the size of one physical memory page on iOS
+    bufferPool := make([]byte, 4096)
+
     // Bidirectional Copy
     done := make(chan struct{})
     go func() {
-        io.Copy(localConn, conn)
-        close(done)
+        // _, _ = io.Copy(localConn, conn)
+         // Use CopyBuffer instead of Copy to control memory usage
+        _, _ = io.CopyBuffer(localConn, conn, bufferPool)
+        
+        // close(done)
+        done <- struct{}{}
     }()
-    io.Copy(conn, localConn)
-    <-done
+   //  _, _ = io.Copy(conn, localConn)
+   _, _ = io.CopyBuffer(conn, localConn, make([]byte, 4096))
+    // <-done
+    select {
+    case <-done:
+    case <-time.After(60 * time.Second):
+        // UDP sessions often don't "close" cleanly; this prevents zombie goroutines
+    }
 }
 
 /* original w/o buff pre-allocated
@@ -360,13 +407,17 @@ func (s *SplitTrafficNetstack) InjectDirectlyV2(packet []byte) {
 }
 
 func (device *Device) shouldBypassTunnel(dst net.IP) bool {
-    /*
+
     bypassIPs := map[string]bool{
+        "104.18.33.187": true,
+        "172.64.154.69": true,
         "103.47.27.48": true,
         "103.47.27.39": true,
-        "1.1.1.1":      false,
+        "1.1.1.1":      true,
     }
-    return bypassIPs[dst.String()]
-    */
+    if bypassIPs[dst.String()] {
+        return true
+    }
     return device.ShouldBypassByCountry(dst, "us")
+
 }

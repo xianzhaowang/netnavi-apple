@@ -89,8 +89,8 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
     } else {
         runtime.GOMAXPROCS(1)
     }
-    debug.SetGCPercent(100)
-    debug.SetMemoryLimit(45 * 1024 * 1024)
+    debug.SetGCPercent(80)
+    debug.SetMemoryLimit(40 * 1024 * 1024)
 	logger := &device.Logger{
 		// Verbosef: CLogger(0).Printf,
         Verbosef: func(format string, args ...interface{}) {},
@@ -153,6 +153,7 @@ func wgTurnOff(tunnelHandle int32) {
 		return
 	}
 	delete(tunnelHandles, tunnelHandle)
+    dev.GeoCache = nil
 	dev.Close()
 }
 

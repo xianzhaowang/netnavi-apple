@@ -19,7 +19,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
         Logger.configureGlobal(tagged: "FWDD", withFilePath: FileManager.logFileURL?.path)
 
-        wg_log(.info, message: "Starting tunnel from the " + (activationAttemptId == nil ? "OS directly, rather than the ui" : "ui"))
+        wg_log(.info, message: "Starting tunnel from the " + (activationAttemptId == nil ? "OS directly rather than UI" : "ui"))
 
         guard let tunnelProviderProtocol = self.protocolConfiguration as? NETunnelProviderProtocol,
               let tunnelConfiguration = tunnelProviderProtocol.asTunnelConfiguration() else {
@@ -33,7 +33,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             guard let adapterError = adapterError else {
                 let interfaceName = self.adapter.interfaceName ?? "unknown"
 
-                wg_log(.info, message: "Tunnel interface is \(interfaceName)")
+                wg_log(.info, message: "NetNavi interface is \(interfaceName)")
 
                 completionHandler(nil)
                 return

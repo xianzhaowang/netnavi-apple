@@ -266,12 +266,39 @@ final class NetNaviAgentDetailInlineCell: UITableViewCell {
 
     }
 
+    private var isViewVisible = false
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if self.window != nil {
+            // Cell appeared on screen
+            isViewVisible = true
+            NotificationCenter.default.addObserver(self, selector: #selector(stopPolling), name: UIApplication.didEnterBackgroundNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(startPolling), name: UIApplication.willEnterForegroundNotification, object: nil)
+            renderRuntime()
+        } else {
+            // Cell was removed (user scrolled away or closed view)
+            stopPolling()
+        }
+    }
+
+    @objc private func stopPolling() {
+        isViewVisible = false
+    }
+
+    @objc private func startPolling() {
+        isViewVisible = true
+        renderRuntime()
+    }
+
     private func renderRuntime(_ cfg: TunnelConfiguration? = nil) {
         guard let t = tunnel else { return }
 
         var rx: UInt64 = 0
         var tx: UInt64 = 0
         var lastHandshake: Date?
+
+        guard isViewVisible else { return }
 
         if let cfg = cfg {
             rx = cfg.peers.reduce(0) { $0 + ($1.rxBytes ?? 0) }
@@ -302,9 +329,21 @@ final class NetNaviAgentDetailInlineCell: UITableViewCell {
             liveTile.bodyStack.addArrangedSubview(makeKV("Liveness Check", "-"))
         }
 
+        /*
         if t.status == .active {
             tunnel?.getRuntimeTunnelConfiguration { [weak self] cfg in
                 DispatchQueue.main.async {
+                    self?.renderRuntime(cfg)
+                }
+            }
+        }*/
+        if t.status == .active {
+            // 5 second delay to save battery and stay under 50MB
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+                // Ensure we are still visible before making the expensive IPC call
+                guard self?.isViewVisible == true else { return }
+
+                self?.tunnel?.getRuntimeTunnelConfiguration { cfg in
                     self?.renderRuntime(cfg)
                 }
             }
