@@ -25,7 +25,7 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2018-2023 WireGuard LLC. All Rights Reserved.</string>
+	<string>Copyright © 2026 Freecomm LLC. All Rights Reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>LSBackgroundOnly</key>
@@ -33,6 +33,6 @@
 	<key>com.wireguard.macos.app_id</key>
 	<string>$(APP_ID_MACOS)</string>
 	<key>com.wireguard.macos.app_group_id</key>
-	<string>$(DEVELOPMENT_TEAM).group.$(APP_ID_MACOS)</string>
+	<string>group.$(APP_ID_MACOS)</string>
 </dict>
 </plist>

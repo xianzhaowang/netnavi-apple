@@ -125,6 +125,7 @@ func (device *Device) NewSplitTrafficHandler() {
     
     // Store in device
     device.splitter = s
+    device.log.Errorf("NetNavi: kkkkkkkkkkk userspace stack created successfully!!!")
 }
 
 func (s *SplitTrafficNetstack) loopWriteToTun() {

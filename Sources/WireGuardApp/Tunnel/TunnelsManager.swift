@@ -42,10 +42,17 @@ class TunnelsManager {
 
         let manager = NETunnelProviderManager()
         let tunnelName = "NetNavi Agent"
+#if os(iOS)
         let address = "192.168.9.254/32"
+#elseif os(macOS)
+        let address = "192.168.9.253/32"
+#else
+        let address = "192.168.9.254/32"
+#endif
         let dnsServers = ["1.1.1.1"]
         // let endpoint = "54.177.65.77:7443"
-        let endpoint = "202.170.218.6:7443"
+        // let endpoint = "202.170.218.6:7443"
+        let endpoint = "54.183.60.87:7443"
         let allowedIPs = "0.0.0.0/0"
 
         localPrivateKey = PrivateKey()
@@ -83,12 +90,14 @@ class TunnelsManager {
         manager.isEnabled = true
 
         // --- ON-DEMAND: AUTO-CONNECT ON ANY NETWORK ---
+#if os(iOS)
         let connectRule = NEOnDemandRuleConnect()
         // This covers both Wi-Fi and Cellular (LTE/5G)
         connectRule.interfaceTypeMatch = .any
 
         manager.onDemandRules = [connectRule]
         manager.isOnDemandEnabled = true
+#endif
         // --- END ON-DEMAND ---
 
         // Save and reload

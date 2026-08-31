@@ -65,6 +65,14 @@ class TunnelsListTableViewController: NSViewController {
         return button
     }()
 
+    // Lazily installed list UI components
+    private var listScrollView: NSScrollView?
+    private var listButtonBar: NSStackView?
+    private var listFillerButton: FillerButton?
+
+    // Constraints for the list UI, so we can remove them on uninstall
+    private var listConstraints: [NSLayoutConstraint] = []
+
     init(tunnelsManager: TunnelsManager) {
         self.tunnelsManager = tunnelsManager
         super.init(nibName: nil, bundle: nil)
@@ -86,6 +94,17 @@ class TunnelsListTableViewController: NSViewController {
         }
         tableView.allowsEmptySelection = false
 
+        // Minimal container setup only, do not install list UI yet
+        let containerView = NSView()
+        view = containerView
+
+        // Initially do not install the list UI to avoid reserving space.
+        // Call installListUI() later when you want to show the list.
+    }
+
+    private func installListUI() {
+        guard listScrollView == nil, listButtonBar == nil, listFillerButton == nil else { return }
+
         let scrollView = NSScrollView()
         scrollView.hasVerticalScroller = true
         scrollView.autohidesScrollers = true
@@ -99,15 +118,9 @@ class TunnelsListTableViewController: NSViewController {
         buttonBar.orientation = .horizontal
         buttonBar.spacing = -1
 
-        NSLayoutConstraint.activate([
-            removeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 26),
-            removeButton.topAnchor.constraint(equalTo: buttonBar.topAnchor),
-            removeButton.bottomAnchor.constraint(equalTo: buttonBar.bottomAnchor)
-        ])
-
         let fillerButton = FillerButton()
 
-        let containerView = NSView()
+        let containerView = self.view
         containerView.addSubview(scrollView)
         containerView.addSubview(buttonBar)
         containerView.addSubview(fillerButton)
@@ -115,7 +128,8 @@ class TunnelsListTableViewController: NSViewController {
         buttonBar.translatesAutoresizingMaskIntoConstraints = false
         fillerButton.translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
+        var constraints: [NSLayoutConstraint] = []
+        constraints += [
             containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
@@ -126,17 +140,41 @@ class TunnelsListTableViewController: NSViewController {
             containerView.bottomAnchor.constraint(equalTo: fillerButton.bottomAnchor),
             buttonBar.trailingAnchor.constraint(equalTo: fillerButton.leadingAnchor, constant: 1),
             fillerButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
+        ]
+        constraints += [
             containerView.widthAnchor.constraint(equalToConstant: 180),
             containerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 120)
-        ])
+        ]
+        NSLayoutConstraint.activate(constraints)
 
+        // Keep references for uninstall
+        listScrollView = scrollView
+        listButtonBar = buttonBar
+        listFillerButton = fillerButton
+        listConstraints = constraints
+
+        // Ensure menu targets are set (needed when reinstalled)
         addButton.menu?.items.forEach { $0.target = self }
         actionButton.menu?.items.forEach { $0.target = self }
+    }
 
-        view = containerView
+    private func uninstallListUI() {
+        // Deactivate constraints and remove subviews to eliminate blank space
+        NSLayoutConstraint.deactivate(listConstraints)
+        listConstraints.removeAll()
+
+        listScrollView?.removeFromSuperview()
+        listButtonBar?.removeFromSuperview()
+        listFillerButton?.removeFromSuperview()
+
+        listScrollView = nil
+        listButtonBar = nil
+        listFillerButton = nil
+    }
+
+    // Convenience method to toggle list visibility
+    func setListVisible(_ visible: Bool) {
+        if visible { installListUI() } else { uninstallListUI() }
     }
 
     override func viewWillAppear() {
@@ -361,3 +399,4 @@ class FillerButton: NSButton {
         // Eat mouseDown event, so that the button looks enabled but is unresponsive
     }
 }
+

@@ -8,16 +8,16 @@ class TunnelDetailTableViewController: NSViewController {
     private enum TableViewModelRow {
         case interfaceFieldRow(TunnelViewModel.InterfaceField)
         case peerFieldRow(peer: TunnelViewModel.PeerData, field: TunnelViewModel.PeerField)
-        case onDemandRow
-        case onDemandSSIDRow
+        // case onDemandRow
+        // case onDemandSSIDRow
         case spacerRow
 
         func localizedSectionKeyString() -> String {
             switch self {
             case .interfaceFieldRow: return tr("tunnelSectionTitleInterface")
             case .peerFieldRow: return tr("tunnelSectionTitlePeer")
-            case .onDemandRow: return tr("macFieldOnDemand")
-            case .onDemandSSIDRow: return ""
+            // case .onDemandRow: return tr("macFieldOnDemand")
+            // case .onDemandSSIDRow: return ""
             case .spacerRow: return ""
             }
         }
@@ -26,21 +26,32 @@ class TunnelDetailTableViewController: NSViewController {
             switch self {
             case .interfaceFieldRow(let field): return field == .name
             case .peerFieldRow(_, let field): return field == .publicKey
-            case .onDemandRow: return true
-            case .onDemandSSIDRow: return false
+            // case .onDemandRow: return true
+            // case .onDemandSSIDRow: return false
             case .spacerRow: return false
             }
         }
     }
 
+    /* original fields
     static let interfaceFields: [TunnelViewModel.InterfaceField] = [
         .name, .status, .publicKey, .addresses,
-        .listenPort, .mtu, .dns, .toggleStatus
+        .listenPort, .mtu, .dns , .toggleStatus
     ]
 
     static let peerFields: [TunnelViewModel.PeerField] = [
         .publicKey, .preSharedKey, .endpoint,
         .allowedIPs, .persistentKeepAlive,
+        .rxBytes, .txBytes, .lastHandshakeTime
+    ]
+    */
+
+    static let interfaceFields: [TunnelViewModel.InterfaceField] = [
+        .name, .status, .addresses
+    ]
+
+    static let peerFields: [TunnelViewModel.PeerField] = [
+        .endpoint,
         .rxBytes, .txBytes, .lastHandshakeTime
     ]
 
@@ -190,13 +201,14 @@ class TunnelDetailTableViewController: NSViewController {
             peerSection.append((isVisible: true, modelRow: .spacerRow))
             modelRowsBySection.append(peerSection)
         }
-
+        /*
         var onDemandSection = [(isVisible: Bool, modelRow: TableViewModelRow)]()
         onDemandSection.append((isVisible: true, modelRow: .onDemandRow))
         if onDemandViewModel.isWiFiInterfaceEnabled {
             onDemandSection.append((isVisible: true, modelRow: .onDemandSSIDRow))
         }
         modelRowsBySection.append(onDemandSection)
+         */
 
         tableViewModelRowsBySection = modelRowsBySection
     }
@@ -405,6 +417,7 @@ extension TunnelDetailTableViewController: NSTableViewDelegate {
             return cell
         case .spacerRow:
             return NSView()
+        /*
         case .onDemandRow:
             let cell: KeyValueRow = tableView.dequeueReusableCell()
             cell.key = modelRow.localizedSectionKeyString()
@@ -425,6 +438,7 @@ extension TunnelDetailTableViewController: NSTableViewDelegate {
             cell.value = value
             cell.isKeyInBold = false
             return cell
+         */
         }
     }
 

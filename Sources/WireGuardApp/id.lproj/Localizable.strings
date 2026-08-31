@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Public key";
 "tunnelPeerPreSharedKey" = "Preshared key";
-"tunnelPeerEndpoint" = "Endpoint";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Persistent keepalive";
 "tunnelPeerAllowedIPs" = "IP yang diperbolehkan";
 "tunnelPeerRxBytes" = "Data diterima";
@@ -98,7 +98,7 @@
 "alertInvalidInterfaceMessageListenPortInvalid" = "Interface’s listen port must be between 0 and 65535, or unspecified";
 "addPeerButtonTitle" = "Add peer";
 "tunnelHandshakeTimestampSystemClockBackward" = "(System clock wound backwards)";
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macAlertNoInterface" = "Configuration must have an ‘Interface’ section.";
 "macNameFieldExportZip" = "Export tunnels to:";
 "alertSystemErrorMessageTunnelConfigurationUnknown" = "Unknown system error.";
@@ -107,7 +107,7 @@
 "tunnelPeerPresharedKeyEnabled" = "enabled";
 "alertScanQRCodeCameraUnsupportedMessage" = "This device is not able to scan QR codes";
 "macSheetButtonExportZip" = "Save";
-"macWindowTitleManageTunnels" = "Manage WireGuard Tunnels";
+"macWindowTitleManageTunnels" = "NetNavi Agent Window";
 "macConfirmAndQuitAlertInfo" = "If you close the tunnels manager, WireGuard will continue to be available from the menu bar icon.";
 "macUnusableTunnelInfo" = "In case this tunnel was created by another user, only that user can view, edit, or activate this tunnel.";
 "alertTunnelActivationErrorTunnelIsNotInactiveMessage" = "The tunnel is already active or in the process of being activated";
@@ -159,7 +159,7 @@
 "deletePeerConfirmationAlertButtonTitle" = "Delete";
 "alertInvalidPeerMessagePreSharedKeyInvalid" = "Peer’s preshared key must be a 32-byte key in base64 encoding";
 "macAppExitingWithActiveTunnelInfo" = "The tunnel will remain active after exiting. You may disable it by reopening this application or through the Network panel in System Preferences.";
-"macMenuEdit" = "Edit";
+"macMenuEdit" = "Edit/DEBUG";
 "donateLink" = "♥ Donate to the WireGuard Project";
 "alertScanQRCodeCameraUnsupportedTitle" = "Camera Unsupported";
 "macMenuWindow" = "Window";
@@ -196,7 +196,7 @@
 "alertSystemErrorMessageTunnelConfigurationReadWriteFailed" = "Reading or writing the configuration failed.";
 "macMenuEditTunnel" = "Edit…";
 "settingsSectionTitleTunnelLog" = "Log";
-"macMenuManageTunnels" = "Manage Tunnels";
+"macMenuManageTunnels" = "NetNavi";
 "macButtonImportTunnels" = "Import tunnel(s) from file";
 "macAppExitingWithActiveTunnelMessage" = "WireGuard is exiting with an active tunnel";
 "alertSystemErrorMessageTunnelConfigurationStale" = "The configuration is stale.";
@@ -207,6 +207,7 @@
 "alertNoTunnelsInImportedZipArchiveTitle" = "No tunnels in zip archive";
 "alertTunnelDNSFailureTitle" = "DNS resolution failure";
 "macLogButtonTitleSave" = "Save…";
+"macLogButtonTitleClear" = "Clear";
 "macMenuToggleStatus" = "Toggle Status";
 "macMenuMinimize" = "Minimize";
 "deletePeerButtonTitle" = "Delete peer";
@@ -254,7 +255,8 @@
 "alertTunnelAlreadyExistsWithThatNameMessage" = "A tunnel with that name already exists";
 "macLogColumnTitleLogMessage" = "Log message";
 "iosExportPrivateData" = "Authenticate to export tunnel private keys.";
-"macMenuAbout" = "About WireGuard";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
+"macMenuAbout" = "About NetNavi";
 "macSheetButtonImport" = "Import";
 "alertScanQRCodeNamePromptTitle" = "Please name the scanned tunnel";
 "alertUnableToRemovePreviousLogMessage" = "The pre-existing log could not be cleared";

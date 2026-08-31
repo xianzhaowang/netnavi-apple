@@ -31,6 +31,7 @@ type Device struct {
     bypassBufferPool    sync.Pool
     geoDB               *maxminddb.Reader
     GeoCache            map[string]string
+    IsMacOS             bool
 	state struct {
 		// state holds the device's state. It is accessed atomically.
 		// Use the device.deviceState method to read it.

@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "ਪਬਲਿਕ ਕੁੰਜੀ";
 "tunnelPeerPreSharedKey" = "ਤਰਜੀਹੀ ਕੁੰਜੀ";
-"tunnelPeerEndpoint" = "ਐਂਡ-ਪੁਆਇੰਟ";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "ਸਥਿਰ ਲਗਾਤਾਰ ਜਾਰੀ ਰੱਖੋ";
 "tunnelPeerAllowedIPs" = "ਮਨਜ਼ੂਰ ਕੀਤੇ IP";
 "tunnelPeerRxBytes" = "ਮਿਲਿਆ ਡਾਟਾ";
@@ -300,6 +300,7 @@
 "macMenuAddEmptyTunnel" = "…ਖਾਲੀ ਟਨਲ ਜੋੜੋ";
 "macMenuViewLog" = "ਲਾਗ ਵੇਖੋ";
 "macMenuExportTunnels" = "ਟਨਲ ਨੂੰ ਜ਼ਿੱਪ ਵਜੋਂ ਬਰਾਮਦ ਕਰੋ…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "ਵਾਇਰਗਾਰਡ ਬਾਰੇ";
 "macMenuQuit" = "ਵਾਇਰਗਾਰਡ ਚੋਂ ਬਾਹਰ ਜਾਓ";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "ਲਾਗ ਸੁਨੇਹੇ";
 "macLogButtonTitleClose" = "ਬੰਦ ਕਰੋ";
 "macLogButtonTitleSave" = "ਸੰਭਾਲੋ…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

@@ -78,6 +78,7 @@
 "settingsViewTitle" = "設定";
 
 "settingsSectionTitleAbout" = "關於";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "關於 NetNavi";
 "macMenuQuit" = "離開 NetNavi";
 
@@ -91,7 +92,7 @@
 "macMenuDeleteSelected" = "Delete Selected";
 "alertSystemErrorMessageTunnelConfigurationInvalid" = "The configuration is invalid.";
 "tunnelPeerPublicKey" = "Public key";
-"tunnelPeerEndpoint" = "Endpoint";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "alertInvalidInterfaceMessageListenPortInvalid" = "Interface’s listen port must be between 0 and 65535, or unspecified";
 "addPeerButtonTitle" = "Add peer";
 "tunnelHandshakeTimestampSystemClockBackward" = "(System clock wound backwards)";
@@ -103,7 +104,7 @@
 "tunnelPeerPresharedKeyEnabled" = "enabled";
 "alertScanQRCodeCameraUnsupportedMessage" = "This device is not able to scan QR codes";
 "macSheetButtonExportZip" = "Save";
-"macWindowTitleManageTunnels" = "Manage NetNavi Tunnels";
+"macWindowTitleManageTunnels" = "NetNavi Agent Window";
 "macConfirmAndQuitAlertInfo" = "If you close the tunnels manager, NetNavi will continue to be available from the menu bar icon.";
 "macUnusableTunnelInfo" = "In case this tunnel was created by another user, only that user can view, edit, or activate this tunnel.";
 "alertTunnelActivationErrorTunnelIsNotInactiveMessage" = "The tunnel is already active or in the process of being activated";
@@ -141,6 +142,7 @@
 "alertTunnelActivationFailureTitle" = "Activation failure";
 "tunnelPeerTxBytes" = "Data sent";
 "macLogButtonTitleClose" = "Close";
+"macLogButtonTitleClear" = "Clear";
 "tunnelOnDemandSSIDViewTitle" = "SSIDs";
 "tunnelOnDemandOptionCellularOnly" = "Cellular only";
 "tunnelEditPlaceholderTextOptional" = "Optional";
@@ -156,7 +158,7 @@
 "deletePeerConfirmationAlertButtonTitle" = "Delete";
 "alertInvalidPeerMessagePreSharedKeyInvalid" = "Peer’s preshared key must be a 32-byte key in base64 encoding";
 "macAppExitingWithActiveTunnelInfo" = "The tunnel will remain active after exiting. You may disable it by reopening this application or through the Network panel in System Preferences.";
-"macMenuEdit" = "Edit";
+"macMenuEdit" = "Edit/DEBUG";
 "donateLink" = "Subscribe to the NetNavi";
 "alertScanQRCodeCameraUnsupportedTitle" = "Camera Unsupported";
 "macMenuWindow" = "Window";
@@ -182,7 +184,7 @@
 "alertInvalidPeerMessagePublicKeyInvalid" = "Peer’s public key must be a 32-byte key in base64 encoding";
 "tunnelOnDemandCellular" = "Cellular";
 "tunnelOnDemandKey" = "On demand";
-"macConfirmAndQuitAlertQuitWireGuard" = "Quit NetNavi";
+"macConfirmAndQuitAlertQuitWireGuard" = "Quit";
 "alertSystemErrorOnRemoveTunnelTitle" = "Unable to remove tunnel";
 "macFieldOnDemand" = "On-Demand:";
 "macMenuCloseWindow" = "Close Window";
@@ -192,7 +194,7 @@
 "alertSystemErrorMessageTunnelConfigurationReadWriteFailed" = "Reading or writing the configuration failed.";
 "macMenuEditTunnel" = "Edit…";
 "settingsSectionTitleTunnelLog" = "Log";
-"macMenuManageTunnels" = "Manage Tunnels";
+"macMenuManageTunnels" = "NetNavi";
 "macButtonImportTunnels" = "Import tunnel(s) from file";
 "macAppExitingWithActiveTunnelMessage" = "NetNavi is exiting with an active tunnel";
 "tunnelSectionTitlePeer" = "Peer";
@@ -226,7 +228,7 @@
 "macExportPrivateData" = "export tunnel private keys";
 "alertTunnelAlreadyExistsWithThatNameTitle" = "Name already exists";
 "iosViewPrivateData" = "Authenticate to view tunnel private keys.";
-"tunnelPeerLastHandshakeTime" = "Latest handshake";
+"tunnelPeerLastHandshakeTime" = "Liveness Check";
 "macAlertPreSharedKeyInvalid" = "Preshared key is invalid";
 "macEditSave" = "Save";
 "macConfirmAndQuitAlertCloseWindow" = "Close Tunnels Manager";

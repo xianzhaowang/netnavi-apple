@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Julkinen avain";
 "tunnelPeerPreSharedKey" = "Jaettu avain";
-"tunnelPeerEndpoint" = "Päätepiste";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Jatkuva keepalive";
 "tunnelPeerAllowedIPs" = "Sallitut IP-osoitteet";
 "tunnelPeerRxBytes" = "Data vastaanotettu";
@@ -247,12 +247,13 @@
 "macMenuNetworks (%@)" = "Verkot: %@";
 "macMenuNetworksNone" = "Verkot: Ei mitään";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Hallitse tunneleita";
 "macMenuImportTunnels" = "Tuo tunneli(t) tiedostosta…";
 "macMenuAddEmptyTunnel" = "Lisää tyhjä tunneli…";
 "macMenuViewLog" = "Näytä loki";
 "macMenuExportTunnels" = "Vie tunnelit Zippinä…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "Tietoa WireGuardista";
 "macMenuQuit" = "Sulje WireGuard";
 
@@ -347,6 +348,7 @@
 "macLogColumnTitleLogMessage" = "Lokiviesti";
 "macLogButtonTitleClose" = "Sulje";
 "macLogButtonTitleSave" = "Tallenna…";
+"macLogButtonTitleClear" = "Clear";
 "macUnusableTunnelButtonTitleDeleteTunnel" = "Poista tunneli";
 
 // Mac App Store updating alert

@@ -63,11 +63,11 @@ class StatusMenu: NSMenu {
         let networksMenuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
         networksMenuItem.isEnabled = false
         networksMenuItem.isHidden = true
-        addItem(networksMenuItem)
+        // addItem(networksMenuItem)
         let deactivateMenuItem = NSMenuItem(title: tr("macToggleStatusButtonDeactivate"), action: #selector(deactivateClicked), keyEquivalent: "")
         deactivateMenuItem.target = self
         deactivateMenuItem.isHidden = true
-        addItem(deactivateMenuItem)
+        // addItem(deactivateMenuItem)
         self.statusMenuItem = statusMenuItem
         self.networksMenuItem = networksMenuItem
         self.deactivateMenuItem = deactivateMenuItem
@@ -122,12 +122,18 @@ class StatusMenu: NSMenu {
         let manageItem = NSMenuItem(title: tr("macMenuManageTunnels"), action: #selector(manageTunnelsClicked), keyEquivalent: "")
         manageItem.target = self
         addItem(manageItem)
+        /*
         let importItem = NSMenuItem(title: tr("macMenuImportTunnels"), action: #selector(importTunnelsClicked), keyEquivalent: "")
         importItem.target = self
         addItem(importItem)
+        */
     }
 
     func addApplicationItems() {
+        let myNetNaviItem = NSMenuItem(title: tr("macMenuMyNetNavi"), action: #selector(showPurchaseWindow), keyEquivalent: "")
+        myNetNaviItem.target = self
+        addItem(myNetNaviItem)
+
         let aboutItem = NSMenuItem(title: tr("macMenuAbout"), action: #selector(AppDelegate.aboutClicked), keyEquivalent: "")
         aboutItem.target = NSApp.delegate
         addItem(aboutItem)
@@ -172,6 +178,11 @@ class StatusMenu: NSMenu {
             ImportPanelPresenter.presentImportPanel(tunnelsManager: self.tunnelsManager,
                                                     sourceVC: manageTunnelsWindow.contentViewController)
         }
+    }
+
+    // NetNavi purchase
+    @MainActor @objc private func showPurchaseWindow() {
+        SubscriptionPurchaseController.shared.showPurchaseWindow()
     }
 }
 
@@ -278,6 +289,7 @@ extension StatusMenu {
         let numberOfTunnels = tunnelsManager.numberOfTunnels()
         for tunnelIndex in 0..<numberOfTunnels {
             let tunnel = tunnelsManager.tunnel(at: tunnelIndex)
+            tunnel.name = "Toggle Service"
             let menuItem = makeTunnelItem(tunnel: tunnel)
             menu.insertItem(menuItem, at: startIndex + tunnelIndex)
         }
@@ -360,3 +372,4 @@ private enum StatusMenuTunnelsPresentationStyle {
         }
     }
 }
+

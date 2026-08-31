@@ -215,9 +215,6 @@ func (device *Device) RoutineReadFromTUN() {
 		device.state.stopping.Done()
 		device.queue.encryption.wg.Done()
 	}()
-
-	device.log.Verbosef("Routine: TUN reader - started")
- 
     /*
      if device.splitter == nil {
         device.log.Verbosef("Routine: NetNavi FWDD - started")
@@ -266,6 +263,7 @@ func (device *Device) RoutineReadFromTUN() {
 			dst := elem.packet[IPv4offsetDst : IPv4offsetDst+net.IPv4len]
 			peer = device.allowedips.Lookup(dst)
 
+if device.IsMacOS {
             protocol := elem.packet[IPv4ProtocolOffset]
             
             ihl := int(elem.packet[0]&0x0f) << 2
@@ -317,7 +315,7 @@ func (device *Device) RoutineReadFromTUN() {
                 elem = nil
                 continue
             }
-
+}
 		case ipv6.Version:
 			if len(elem.packet) < ipv6.HeaderLen {
 				continue

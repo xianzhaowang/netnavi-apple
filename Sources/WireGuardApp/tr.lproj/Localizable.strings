@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Genel anahtar";
 "tunnelPeerPreSharedKey" = "Önceden paylaşılan anahtar";
-"tunnelPeerEndpoint" = "Uç nokta";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Kalıcı canlı tutma";
 "tunnelPeerAllowedIPs" = "İzin verilen IP’ler";
 "tunnelPeerRxBytes" = "Veri alındı";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "Ağlar: %@";
 "macMenuNetworksNone" = "Ağlar: Yok";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Tünelleri Yönet";
 "macMenuImportTunnels" = "Tünelleri Dosyadan İçe Aktar…";
 "macMenuAddEmptyTunnel" = "Boş Tünel Ekle…";
 "macMenuViewLog" = "Günlüğü Görüntüle";
 "macMenuExportTunnels" = "Tünelleri Zip'e Aktar…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "WireGuard Hakkında";
 "macMenuQuit" = "WireGuard’dan Çık";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "Günlük mesajı";
 "macLogButtonTitleClose" = "Kapat";
 "macLogButtonTitleSave" = "Kaydet…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

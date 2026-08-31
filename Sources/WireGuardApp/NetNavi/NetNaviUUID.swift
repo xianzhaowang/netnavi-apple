@@ -3,7 +3,7 @@
 import Security
 import Foundation
 
-final class DeviceUUID {
+class DeviceUUID {
 
     private static let service = "io.netnavi.deviceuuid"
     private static let account = "freecomm"

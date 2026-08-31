@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>NetNavimacOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
 		<key>WireGuardGoBridgeiOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -27,7 +32,7 @@
 		<key>WireGuardNetworkExtensionmacOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>6</integer>
 		</dict>
 		<key>WireGuardmacOS.xcscheme_^#shared#^_</key>
 		<dict>
@@ -37,12 +42,27 @@
 		<key>WireGuardmacOSLoginItemHelper.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>6</integer>
+			<integer>4</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>6F5D0C19218352EF000F85AD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6F70E22822106A2D008BDFB4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6FB1BD5C21D2607A00A991BF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6FB1BD9021D4BFE600A991BF</key>
 		<dict>
 			<key>primary</key>
 			<true/>

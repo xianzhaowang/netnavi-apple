@@ -6,7 +6,7 @@ import Cocoa
 // Keeps track of tunnels and informs the following objects of changes in tunnels:
 //   - Status menu
 //   - Status item controller
-//   - Tunnels list view controller in the Manage Tunnels window
+//   - Tunnels list view controller in the Manage Tunnels/Netnavi window
 
 class TunnelsTracker {
 

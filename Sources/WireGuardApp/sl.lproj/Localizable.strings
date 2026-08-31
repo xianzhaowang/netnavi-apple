@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Javni ključ";
 "tunnelPeerPreSharedKey" = "Ključ v skupni rabi";
-"tunnelPeerEndpoint" = "Končna točka";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Trajno ohranjanje povezave";
 "tunnelPeerAllowedIPs" = "Dovoljeni IP-ji";
 "tunnelPeerRxBytes" = "Prejeti podatki";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "Omrežja: %@";
 "macMenuNetworksNone" = "Ni omrežij";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Upravljaj tunele";
 "macMenuImportTunnels" = "Uvozi tunele iz datoteke …";
 "macMenuAddEmptyTunnel" = "Dodaj prazen tunel …";
 "macMenuViewLog" = "Pokaži dnevnik";
 "macMenuExportTunnels" = "Izvozi tunele v datoteko zip …";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "O aplikaciji WireGuard";
 "macMenuQuit" = "Končaj WireGuard";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "Sporočilo dnevnika";
 "macLogButtonTitleClose" = "Zapri";
 "macLogButtonTitleSave" = "Shrani …";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

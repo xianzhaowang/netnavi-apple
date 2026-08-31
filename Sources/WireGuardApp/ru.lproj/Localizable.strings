@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Публичный ключ";
 "tunnelPeerPreSharedKey" = "Общий ключ";
-"tunnelPeerEndpoint" = "IP-адрес сервера";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Поддерживание соединения";
 "tunnelPeerAllowedIPs" = "Разрешенные IP-адреса";
 "tunnelPeerRxBytes" = "Получено данных";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "Сети: %@";
 "macMenuNetworksNone" = "Сети отсутствуют";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Управление туннелями";
 "macMenuImportTunnels" = "Импорт туннелей из файла…";
 "macMenuAddEmptyTunnel" = "Добавить пустой туннель…";
 "macMenuViewLog" = "Просмотреть журнал";
 "macMenuExportTunnels" = "Экспорт туннелей в zip-архив…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "О WireGuard";
 "macMenuQuit" = "Выйти из WireGuard";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "Сообщение Журнала";
 "macLogButtonTitleClose" = "Закрыть";
 "macLogButtonTitleSave" = "Сохранить…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

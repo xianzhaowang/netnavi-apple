@@ -9,10 +9,10 @@ class MainMenu: NSMenu {
     init() {
         super.init(title: "")
         addSubmenu(createApplicationMenu())
-        addSubmenu(createFileMenu())
-        addSubmenu(createEditMenu())
-        addSubmenu(createTunnelMenu())
-        addSubmenu(createWindowMenu())
+        // addSubmenu(createFileMenu())
+        // addSubmenu(createEditMenu())
+        // addSubmenu(createTunnelMenu())
+        // addSubmenu(createWindowMenu())
     }
 
     required init(coder decoder: NSCoder) {
@@ -31,12 +31,8 @@ class MainMenu: NSMenu {
             action: #selector(AppDelegate.aboutClicked), keyEquivalent: "")
         aboutMenuItem.target = NSApp.delegate
 
-        menu.addItem(NSMenuItem.separator())
-
         menu.addItem(withTitle: tr("macMenuViewLog"),
                      action: #selector(TunnelsListTableViewController.handleViewLogAction), keyEquivalent: "")
-
-        menu.addItem(NSMenuItem.separator())
 
         let hideMenuItem = menu.addItem(withTitle: tr("macMenuHideApp"),
                                         action: #selector(NSApplication.hide), keyEquivalent: "h")
@@ -59,12 +55,10 @@ class MainMenu: NSMenu {
 
     private func createFileMenu() -> NSMenu {
         let menu = NSMenu(title: tr("macMenuFile"))
-
         menu.addItem(withTitle: tr("macMenuAddEmptyTunnel"),
             action: #selector(TunnelsListTableViewController.handleAddEmptyTunnelAction), keyEquivalent: "n")
         menu.addItem(withTitle: tr("macMenuImportTunnels"),
             action: #selector(TunnelsListTableViewController.handleImportTunnelAction), keyEquivalent: "o")
-
         menu.addItem(NSMenuItem.separator())
 
         menu.addItem(withTitle: tr("macMenuExportTunnels"),

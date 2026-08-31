@@ -72,7 +72,7 @@
 "macToggleStatusButtonDisableOnDemand" = "Disable On-Demand";
 "macToggleStatusButtonDisableOnDemandDeactivate" = "Disable On-Demand and Deactivate";
 
-"tunnelSectionTitleInterface" = "Interface";
+"tunnelSectionTitleInterface" = "Service";
 
 "tunnelInterfaceName" = "Name";
 "tunnelInterfacePrivateKey" = "Private key";
@@ -88,12 +88,12 @@
 
 "tunnelPeerPublicKey" = "Public key";
 "tunnelPeerPreSharedKey" = "Preshared key";
-"tunnelPeerEndpoint" = "Endpoint";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Persistent keepalive";
 "tunnelPeerAllowedIPs" = "Allowed IPs";
 "tunnelPeerRxBytes" = "Data received";
 "tunnelPeerTxBytes" = "Data sent";
-"tunnelPeerLastHandshakeTime" = "Latest handshake";
+"tunnelPeerLastHandshakeTime" = "Liveness Check";
 "tunnelPeerExcludePrivateIPs" = "Exclude private IPs";
 
 "tunnelSectionTitleOnDemand" = "On-Demand Activation";
@@ -306,13 +306,14 @@
 
 "macMenuTitle" = "NetNavi";
 "macTunnelsMenuTitle" = "Tunnels";
-"macMenuManageTunnels" = "Manage Tunnels";
+"macMenuManageTunnels" = "Show NetNavi";
 "macMenuImportTunnels" = "Import Tunnel(s) from File…";
 "macMenuAddEmptyTunnel" = "Add Empty Tunnel…";
 "macMenuViewLog" = "Audit Log";
 "macMenuExportTunnels" = "Export Tunnels to Zip…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "About NetNavi";
-"macMenuQuit" = "Quit NetNavi";
+"macMenuQuit" = "Quit";
 
 "macMenuHideApp" = "Hide Netnavi";
 "macMenuHideOtherApps" = "Hide Others";
@@ -321,7 +322,7 @@
 "macMenuFile" = "File";
 "macMenuCloseWindow" = "Close Window";
 
-"macMenuEdit" = "Edit";
+"macMenuEdit" = "Edit/DEBUG";
 "macMenuCut" = "Cut";
 "macMenuCopy" = "Copy";
 "macMenuPaste" = "Paste";
@@ -338,7 +339,7 @@
 
 // Mac manage tunnels window
 
-"macWindowTitleManageTunnels" = "Manage NetNavi Tunnels";
+"macWindowTitleManageTunnels" = "NetNavi Service Compass";
 
 "macDeleteTunnelConfirmationAlertMessage (%@)" = "Are you sure you want to delete ‘%@’?";
 "macDeleteMultipleTunnelsConfirmationAlertMessage (%d)" = "Are you sure you want to delete %d tunnels?";
@@ -347,7 +348,7 @@
 "macDeleteTunnelConfirmationAlertButtonTitleCancel" = "Cancel";
 "macDeleteTunnelConfirmationAlertButtonTitleDeleting" = "Deleting…";
 
-"macButtonImportTunnels" = "Import tunnel(s) from file";
+"macButtonImportTunnels" = "NetNavi configuration lost - retrieving from NetNavi Cloud";
 "macSheetButtonImport" = "Import";
 
 "macNameFieldExportLog" = "Save log to:";
@@ -404,7 +405,7 @@
 
 // Mac about dialog
 
-"macAppVersion (%@)" = "App version: %@";
+"macAppVersion (%@)" = "NetNavi for MacOS: %@";
 "macGoBackendVersion (%@)" = "Go backend version: %@";
 
 // Privacy
@@ -419,7 +420,7 @@
 "macConfirmAndQuitAlertMessage" = "Do you want to close the tunnels manager or quit NetNavi entirely?";
 "macConfirmAndQuitAlertInfo" = "If you close the tunnels manager, NetNavi will continue to be available from the menu bar icon.";
 "macConfirmAndQuitInfoWithActiveTunnel (%@)" = "If you close the tunnels manager, NetNavi will continue to be available from the menu bar icon.\n\nNote that if you quit NetNavi entirely the currently active tunnel ('%@') will still remain active until you deactivate it from this application or through the Network panel in System Preferences.";
-"macConfirmAndQuitAlertQuitWireGuard" = "Quit NetNavi";
+"macConfirmAndQuitAlertQuitWireGuard" = "Quit";
 "macConfirmAndQuitAlertCloseWindow" = "Close Tunnels Manager";
 
 "macAppExitingWithActiveTunnelMessage" = "NetNavi is exiting with an active tunnel";
@@ -436,6 +437,7 @@
 "macLogColumnTitleLogMessage" = "Log message";
 "macLogButtonTitleClose" = "Close";
 "macLogButtonTitleSave" = "Save…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

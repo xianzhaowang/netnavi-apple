@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "公钥";
 "tunnelPeerPreSharedKey" = "预共享密钥";
-"tunnelPeerEndpoint" = "对端";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "连接保活间隔";
 "tunnelPeerAllowedIPs" = "路由的 IP 地址（段）";
 "tunnelPeerRxBytes" = "接收数据量";
@@ -300,6 +300,7 @@
 "macMenuAddEmptyTunnel" = "添加空隧道…";
 "macMenuViewLog" = "查看日志";
 "macMenuExportTunnels" = "导出隧道为Zip…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "关于 NetNavi";
 "macMenuQuit" = "退出 NetNavi";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "记录消息";
 "macLogButtonTitleClose" = "关闭";
 "macLogButtonTitleSave" = "保存…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

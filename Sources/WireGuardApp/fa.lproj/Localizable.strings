@@ -76,7 +76,7 @@
 
 "tunnelPeerPublicKey" = "کلید عمومی";
 "tunnelPeerPreSharedKey" = "کلید از پیش تقسیم شده";
-"tunnelPeerEndpoint" = "نقطه پایان";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "زنده نگه‌داشتن پیوسته";
 "tunnelPeerAllowedIPs" = "IPهای مجاز";
 "tunnelPeerRxBytes" = "داده دریافت شد";
@@ -238,12 +238,13 @@
 "macMenuNetworks (%@)" = "شبکه‌ها: %@";
 "macMenuNetworksNone" = "شبکه‌ها: هیچی";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "مدیریت تونل‌ها";
 "macMenuImportTunnels" = "وارد کردن تونل(ها) از پرونده…";
 "macMenuAddEmptyTunnel" = "افزودن تونل خالی…";
 "macMenuViewLog" = "مشاهده گزارش رویداد";
 "macMenuExportTunnels" = "برون‌بری تونل‌ها در پرونده زیپ…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "درباره WireGuard";
 "macMenuQuit" = "خروج از WireGuard";
 
@@ -342,6 +343,7 @@
 "macLogColumnTitleLogMessage" = "پیام گزارش رویداد";
 "macLogButtonTitleClose" = "بستن";
 "macLogButtonTitleSave" = "ذخیره…";
+"macLogButtonTitleClear" = "Clear";
 "macUnusableTunnelButtonTitleDeleteTunnel" = "حذف تونل";
 
 // Donation

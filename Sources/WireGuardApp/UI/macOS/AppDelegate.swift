@@ -122,26 +122,50 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let currentTunnel = tunnelsTracker?.currentTunnel, currentTunnel.status == .active || currentTunnel.status == .activating else {
             return .terminateNow
         }
-        guard let appleEvent = NSAppleEventManager.shared().currentAppleEvent else {
-            return .terminateNow
+
+        // Prevent multiple quit requests
+        struct Static {
+            static var isQuitting = false
         }
-        guard MacAppStoreUpdateDetector.isUpdatingFromMacAppStore(quitAppleEvent: appleEvent) else {
-            return .terminateNow
+        if Static.isQuitting {
+            return .terminateCancel
         }
+        Static.isQuitting = true
+
+        // Ask for confirmation if desired (optional)
         let alert = NSAlert()
-        alert.messageText = tr("macAppStoreUpdatingAlertMessage")
-        if currentTunnel.isActivateOnDemandEnabled {
-            alert.informativeText = tr(format: "macAppStoreUpdatingAlertInfoWithOnDemand (%@)", currentTunnel.name)
-        } else {
-            alert.informativeText = tr(format: "macAppStoreUpdatingAlertInfoWithoutOnDemand (%@)", currentTunnel.name)
-        }
+        alert.messageText = tr("macAppExitingWithActiveTunnelMessage")
+        alert.informativeText = tr("macAppExitingWithActiveTunnelInfo")
+        alert.addButton(withTitle: tr("macAppExitingWithActiveTunnelDisconnectAndQuit"))
+        alert.addButton(withTitle: tr("actionCancel"))
         NSApp.activate(ignoringOtherApps: true)
         if let manageWindow = manageTunnelsWindowObject {
-            alert.beginSheetModal(for: manageWindow) { _ in }
+            manageWindow.orderFront(self)
+            alert.beginSheetModal(for: manageWindow) { response in
+                if response == .alertFirstButtonReturn {
+                    self.disconnectAndQuit(currentTunnel)
+                } else {
+                    Static.isQuitting = false
+                }
+            }
         } else {
-            alert.runModal()
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                disconnectAndQuit(currentTunnel)
+            } else {
+                Static.isQuitting = false
+            }
         }
         return .terminateCancel
+    }
+
+    private func disconnectAndQuit(_ tunnel: TunnelContainer) {
+        tunnel.onDeactivated = {
+            DispatchQueue.main.async {
+                NSApp.terminate(nil)
+            }
+        }
+        tunnelsManager?.startDeactivation(of: tunnel)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ application: NSApplication) -> Bool {
@@ -195,7 +219,24 @@ extension AppDelegate {
         }
         let appVersionString = [
             tr(format: "macAppVersion (%@)", appVersion),
-            tr(format: "macGoBackendVersion (%@)", WIREGUARD_GO_VERSION)
+            // tr(format: "macGoBackendVersion (%@)", WIREGUARD_GO_VERSION)
+        ].joined(separator: "\n")
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .applicationVersion: appVersionString,
+            .version: "",
+            .credits: ""
+        ])
+    }
+
+    @objc func myNetNaviClicked() {
+        var appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        if let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            appVersion += " (\(appBuild))"
+        }
+        let appVersionString = [
+            tr(format: "macAppVersion (%@)", appVersion),
+            // tr(format: "macGoBackendVersion (%@)", WIREGUARD_GO_VERSION)
         ].joined(separator: "\n")
         NSApp.activate(ignoringOtherApps: true)
         NSApp.orderFrontStandardAboutPanel(options: [
@@ -216,8 +257,8 @@ extension AppDelegate: StatusMenuWindowDelegate {
             manageTunnelsRootVC = ManageTunnelsRootViewController(tunnelsManager: tunnelsManager)
             let window = NSWindow(contentViewController: manageTunnelsRootVC!)
             window.title = tr("macWindowTitleManageTunnels")
-            window.setContentSize(NSSize(width: 800, height: 480))
-            window.setFrameAutosaveName(NSWindow.FrameAutosaveName("ManageTunnelsWindow")) // Auto-save window position and size
+            window.setContentSize(NSSize(width: 600, height: 300))
+            // window.setFrameAutosaveName(NSWindow.FrameAutosaveName("ManageTunnelsWindow")) // Auto-save window position and size
             manageTunnelsWindowObject = window
             tunnelsTracker?.manageTunnelsRootVC = manageTunnelsRootVC
         }
@@ -234,3 +275,4 @@ func registerLoginItem(shouldLaunchAtLogin: Bool) -> Bool {
     let helperBundleId = "\(appId).login-item-helper"
     return SMLoginItemSetEnabled(helperBundleId as CFString, shouldLaunchAtLogin)
 }
+

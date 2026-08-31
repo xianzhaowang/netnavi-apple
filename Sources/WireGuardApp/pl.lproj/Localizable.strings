@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Klucz publiczny";
 "tunnelPeerPreSharedKey" = "PSK";
-"tunnelPeerEndpoint" = "Adres";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Utrzymanie połączenia";
 "tunnelPeerAllowedIPs" = "Dozwolone adresy IP";
 "tunnelPeerRxBytes" = "Otrzymane dane";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "Sieci: %@";
 "macMenuNetworksNone" = "Sieci: brak";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Zarządzaj tunelami";
 "macMenuImportTunnels" = "Importuj tunel(e) z pliku…";
 "macMenuAddEmptyTunnel" = "Dodaj pusty tunel…";
 "macMenuViewLog" = "Wyświetl log";
 "macMenuExportTunnels" = "Wyeksportuj tunele do pliku ZIP…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "Informacje o WireGuard";
 "macMenuQuit" = "Wyjdź z programu WireGuard";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "Dziennik wiadomości";
 "macLogButtonTitleClose" = "Zamknij";
 "macLogButtonTitleSave" = "Zapisz…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

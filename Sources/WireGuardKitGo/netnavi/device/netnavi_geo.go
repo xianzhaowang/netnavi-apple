@@ -39,8 +39,6 @@ func (device *Device) InitNetNaviGeoDB() bool {
 }
 
 func (device *Device) ShouldBypassByCountry(ip net.IP, homeCountry string) bool {
-    // debug
-    return true
     dstCountry := device.GetCountryForIP(ip)
     
     if dstCountry == "" {

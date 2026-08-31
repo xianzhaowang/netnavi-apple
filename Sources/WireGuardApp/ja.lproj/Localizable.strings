@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "公開鍵";
 "tunnelPeerPreSharedKey" = "事前共有鍵";
-"tunnelPeerEndpoint" = "エンドポイント";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "持続的キープアライブ";
 "tunnelPeerAllowedIPs" = "Allowed IPs";
 "tunnelPeerRxBytes" = "受信したデータ";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "ネットワーク: %@";
 "macMenuNetworksNone" = "ネットワーク: なし";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "トンネルの管理";
 "macMenuImportTunnels" = "ファイルからトンネルをインポート…";
 "macMenuAddEmptyTunnel" = "設定が空のトンネルを追加…";
 "macMenuViewLog" = "ログの参照";
 "macMenuExportTunnels" = "トンネル設定をZIPにエクスポート…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "WireGuard について";
 "macMenuQuit" = "WireGuardを終了";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "ログメッセージ";
 "macLogButtonTitleClose" = "閉じる";
 "macLogButtonTitleSave" = "保存…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 

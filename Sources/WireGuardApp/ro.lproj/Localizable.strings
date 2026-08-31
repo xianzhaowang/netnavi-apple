@@ -79,7 +79,7 @@
 
 "tunnelPeerPublicKey" = "Cheie publică";
 "tunnelPeerPreSharedKey" = "Cheie predistribuită";
-"tunnelPeerEndpoint" = "Punct final";
+"tunnelPeerEndpoint" = "NetNavi Cloud";
 "tunnelPeerPersistentKeepalive" = "Mesaj keepalive persistent";
 "tunnelPeerAllowedIPs" = "IP-uri permise";
 "tunnelPeerRxBytes" = "Date primite";
@@ -294,12 +294,13 @@
 "macMenuNetworks (%@)" = "Rețele: %@";
 "macMenuNetworksNone" = "Rețele: niciuna";
 
-"macMenuTitle" = "WireGuard";
+"macMenuTitle" = "NetNavi";
 "macMenuManageTunnels" = "Gestionare tuneluri";
 "macMenuImportTunnels" = "Importare tunel(uri) din fișier…";
 "macMenuAddEmptyTunnel" = "Adăugare tunel gol…";
 "macMenuViewLog" = "Vizualizare jurnal";
 "macMenuExportTunnels" = "Exportare tuneluri în zip…";
+"macMenuMyNetNavi" = "Subscribe NetNavi Pro";
 "macMenuAbout" = "Despre WireGuard";
 "macMenuQuit" = "Ieși din WireGuard";
 
@@ -425,6 +426,7 @@
 "macLogColumnTitleLogMessage" = "Mesaj de jurnal";
 "macLogButtonTitleClose" = "Închidere";
 "macLogButtonTitleSave" = "Salvare…";
+"macLogButtonTitleClear" = "Clear";
 
 // Mac unusable tunnel view
 
